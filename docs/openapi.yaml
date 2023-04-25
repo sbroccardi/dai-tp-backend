@@ -18,21 +18,113 @@ info:
 servers:
   - url: https://screenspace.swagger.io/api/v3
 tags:
-  - name: user
+  - name: auths
+    description: Session operations
+  - name: users
     description: Operations about Users
-  - name: cinema
+  - name: cinemas
     description: Access to Cinemas
-  - name: auditorium
+  - name: auditoriums
     description: Operations about Auditoriums
-  - name: movie
+  - name: movies
     description: Operations about Movies
-  - name: checkout
+  - name: misc
     description: checkout operations
 paths:
-  /user:
+  /health:
+    get:
+      tags:
+        - misc
+      summary: Health status 
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+paths:
+  /auths/loginPrivate:
     post:
       tags:
-        - user
+        - auths
+      summary: Private login 
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /auths/loginPublic:
+    post:
+      tags:
+        - auths
+      summary: Public login 
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /auths:
+    put:
+      tags:
+        - auths
+      summary: Refresh token
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      tags:
+        - auths
+      summary: Logout
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users:
+    post:
+      tags:
+        - users
       summary: Register 
       requestBody:
         content: 
@@ -46,47 +138,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'          
-  /user/login:
+                $ref: '#/components/schemas/User'
+  /users/resetpassword:
     post:
       tags:
-        - user
-      summary: Login for managers
-      requestBody:
-        content: 
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Login'
-        required: true
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          description: Invalid username supplied
-        '404':
-          description: User not found
-          
-  /user/logout:
-    get:
-      tags:
-        - user
-      summary:
-          Logout
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-  /user/resetpassword:
-    post:
-      tags:
-        - user
+        - users
       summary: Reset password
       parameters:
         - name: email
@@ -106,10 +162,10 @@ paths:
           description: Invalid username supplied
         '404':
           description: User not found
-  /user/resendcode:
+  /users/resendcode:
     post:
       tags:
-        - user
+        - users
       summary: Resend code
       parameters:
         - name: email
@@ -129,10 +185,10 @@ paths:
           description: Invalid username supplied
         '404':
           description: User not found
-  /user/confirmcode:
+  /users/confirmcode:
     post:
       tags:
-        - user
+        - users
       summary: Confirm code sent
       parameters:
         - name: email
@@ -158,10 +214,10 @@ paths:
           description: Invalid username supplied
         '404':
           description: User not found
-  /user/{user_id}/changepassword:
+  /users/{user_id}/changepassword:
     post:
       tags:
-        - user
+        - users
       summary: Change password
       parameters:
         - name: user_id
@@ -183,10 +239,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /user/{user_id}/profile:
+  /users/{user_id}:
     get:
       tags:
-        - user
+        - users
+      summary:
+        Get an user profile
+      parameters:
+        - name: user_id
+          in: path
+          description: user_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/{user_id}/me:
+    get:
+      tags:
+        - users
       summary:
         Get user profile
       parameters:
@@ -206,7 +283,7 @@ paths:
                 $ref: '#/components/schemas/User'
     put:
       tags:
-        - user
+        - users
       summary: Update user profile
       parameters:
         - name: user_id
@@ -230,7 +307,7 @@ paths:
                 $ref: '#/components/schemas/User'
     delete:
       tags:
-        - user
+        - users
       parameters:
         - name: user_id
           in: path
@@ -246,12 +323,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /user/{user_id}/purchase:
+  /users/{user_id}/purchases:
     get:
       tags:
-        - user
+        - users
       summary:
-          Get user purchase
+          Get user purchases
       parameters:
         - name: user_id
           in: path
@@ -267,22 +344,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /user/{user_id}/purchase/{purchase_id}: 
+  /movies/{movie_id}/comments: 
     post:
       tags:
-        - user
+        - movies
       summary: Rate & comment movie
       parameters:
-        - name: user_id
+        - name: movie_id
           in: path
           description: user_id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: purchase_id
-          in: path
-          description: purchase_id
           required: true
           schema:
             type: integer
@@ -299,10 +369,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Rate'
-  /cinema:
+  /cinemas:
     post:
       tags:
-        - cinema
+        - cinemas
       summary: Create cinema
       requestBody:
         content: 
@@ -318,9 +388,9 @@ paths:
                 $ref: '#/components/schemas/User'
     get:
       tags:
-        - cinema
+        - cinemas
       summary:
-          List user cinema (with token)	
+          List user cinema (with token)  
       responses:
         '200':
           description: Successful operation
@@ -328,10 +398,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /cinema/{cinema_id}:
+  /cinemas/{cinema_id}:
     get:
       tags:
-        - cinema
+        - cinemas
       summary:
           Get cinema details
       parameters:
@@ -351,7 +421,7 @@ paths:
                 $ref: '#/components/schemas/User'
     put:
       tags:
-        - cinema
+        - cinemas
       summary: Update cinema
       parameters:
         - name: cinema_id
@@ -375,7 +445,7 @@ paths:
                 $ref: '#/components/schemas/User'
     delete:
       tags:
-        - cinema
+        - cinemas
       parameters:
         - name: cinema_id
           in: path
@@ -391,10 +461,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /cinema/{cinema_id}/auditorium:
+  /cinemas/{cinema_id}/auditoriums:
     get:
       tags:
-        - auditorium
+        - auditoriums
       parameters:
         - name: cinema_id
           in: path
@@ -412,7 +482,7 @@ paths:
                 $ref: '#/components/schemas/User'
     post:
       tags:
-        - auditorium
+        - auditoriums
       summary: Create auditorium
       parameters:
         - name: cinema_id
@@ -434,10 +504,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /cinema/{cinema_id}/auditorium/{auditorium_id}:
+  /cinemas/{cinema_id}/auditoriums/{auditorium_id}:
     get:
       tags:
-        - auditorium
+        - auditoriums
       summary:
           Get auditorium details 
       parameters:
@@ -464,7 +534,7 @@ paths:
                 $ref: '#/components/schemas/User'
     put:
       tags:
-        - auditorium
+        - auditoriums
       summary: Update auditorium
       parameters:
         - name: cinema_id
@@ -495,7 +565,7 @@ paths:
                 $ref: '#/components/schemas/User'
     delete:
       tags:
-        - auditorium
+        - auditoriums
       parameters:
         - name: cinema_id
           in: path
@@ -518,10 +588,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /movie:
+  /movies:
     get:
       tags:
-        - movie
+        - movies
       summary:
            List movies       
       parameters:
@@ -564,10 +634,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Movie'
-  /movie/{movie_id}:
+  /movies/{movie_id}:
     get:
       tags:
-        - movie
+        - movies
       summary:
           Get movie details
       parameters:
@@ -585,10 +655,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Movie'
-  /movie/{movie_id}/screening:
+  /movies/{movie_id}/screenings:
     get:
       tags:
-        - screening
+        - screenings
       summary:
           List screening
       parameters:
@@ -608,7 +678,7 @@ paths:
                 $ref: '#/components/schemas/Screening'
     post:
       tags:
-        - screening
+        - screenings
       summary: Create screening
       parameters:
         - name: movie_id
@@ -630,10 +700,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Screening'
-  /movie/{movie_id}/screening/{screening_id}:
+  /movies/{movie_id}/screenings/{screening_id}:
     get:
       tags:
-        - screening
+        - screenings
       summary:
           Get screening details
       parameters:
@@ -660,7 +730,7 @@ paths:
                 $ref: '#/components/schemas/User'
     delete:
       tags:
-        - screening
+        - screenings
       parameters:
         - name: movie_id
           in: path
@@ -683,10 +753,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /movie/screening:
+  /movies/screenings:
     get:
       tags:
-        - screening
+        - screenings
       summary:
         List all user screening (with token)
       responses:
@@ -699,7 +769,7 @@ paths:
   /checkout:
     post:
       tags:
-        - checkout
+        - misc
       summary: Checkout
       requestBody:
         content: 
