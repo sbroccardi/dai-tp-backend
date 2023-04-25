@@ -1,0 +1,832 @@
+openapi: 3.0.3
+info:
+  title: ScreenSpace
+  description: |-
+    The ScreenSpace mobile app is a complete solution for movie lovers that allows them to explore, purchase tickets and enjoy movies in nearby theaters more efficiently and personalized. Users can search for movies, view showtimes, purchase tickets and rate movies after watching them. The app also provides personalized recommendations based on the user’s rating and viewing data.
+
+    Some useful links:
+    - [Frontend repository](https://github.com/sbroccardi/dai-tp-frontend)
+    - [Backend repository](https://github.com/sbroccardi/dai-tp-backend)
+    - [The source API definition for ScreenSpace API](https://github.com/sbroccardi/dai-tp-backend/blob/main/openapi.yaml)
+  termsOfService: https://github.com/sbroccardi/dai-tp-backend/blob/main/terms.txt
+  contact:
+    email: sgilbroccardi@uade.edu.ar
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+servers:
+  - url: https://screenspace.swagger.io/api/v3
+tags:
+  - name: user
+    description: Operations about Users
+  - name: cinema
+    description: Access to Cinemas
+  - name: auditorium
+    description: Operations about Auditoriums
+  - name: movie
+    description: Operations about Movies
+  - name: checkout
+    description: checkout operations
+paths:
+  /user:
+    post:
+      tags:
+        - user
+      summary: Register 
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: Login for managers
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+          
+  /user/logout:
+    get:
+      tags:
+        - user
+      summary:
+          Logout
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /user/resetpassword:
+    post:
+      tags:
+        - user
+      summary: Reset password
+      parameters:
+        - name: email
+          in: query
+          description: email
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+  /user/resendcode:
+    post:
+      tags:
+        - user
+      summary: Resend code
+      parameters:
+        - name: email
+          in: query
+          description: email
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+  /user/confirmcode:
+    post:
+      tags:
+        - user
+      summary: Confirm code sent
+      parameters:
+        - name: email
+          in: query
+          description: email
+          required: true
+          schema:
+            type: string
+        - name: resetCode
+          in: query
+          description: resetCode
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+  /user/{user_id}/changepassword:
+    post:
+      tags:
+        - user
+      summary: Change password
+      parameters:
+        - name: user_id
+          in: path
+          description: user_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /user/{user_id}/profile:
+    get:
+      tags:
+        - user
+      summary:
+        Get user profile
+      parameters:
+        - name: user_id
+          in: path
+          description: user_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags:
+        - user
+      summary: Update user profile
+      parameters:
+        - name: user_id
+          in: path
+          description: user_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      tags:
+        - user
+      parameters:
+        - name: user_id
+          in: path
+          description: ID of user that needs to be fetched
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /user/{user_id}/purchase:
+    get:
+      tags:
+        - user
+      summary:
+          Get user purchase
+      parameters:
+        - name: user_id
+          in: path
+          description: user_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /user/{user_id}/purchase/{purchase_id}: 
+    post:
+      tags:
+        - user
+      summary: Rate & comment movie
+      parameters:
+        - name: user_id
+          in: path
+          description: user_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: purchase_id
+          in: path
+          description: purchase_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rate'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rate'
+  /cinema:
+    post:
+      tags:
+        - cinema
+      summary: Create cinema
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cinema'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    get:
+      tags:
+        - cinema
+      summary:
+          List user cinema (with token)	
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /cinema/{cinema_id}:
+    get:
+      tags:
+        - cinema
+      summary:
+          Get cinema details
+      parameters:
+        - name: cinema_id
+          in: path
+          description: cinema_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags:
+        - cinema
+      summary: Update cinema
+      parameters:
+        - name: cinema_id
+          in: path
+          description: cinema_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cinema'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      tags:
+        - cinema
+      parameters:
+        - name: cinema_id
+          in: path
+          description: ID of cinema that needs to be fetched
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /cinema/{cinema_id}/auditorium:
+    get:
+      tags:
+        - auditorium
+      parameters:
+        - name: cinema_id
+          in: path
+          description: ID of cinema that needs to be fetched
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    post:
+      tags:
+        - auditorium
+      summary: Create auditorium
+      parameters:
+        - name: cinema_id
+          in: path
+          description: cinema_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cinema'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /cinema/{cinema_id}/auditorium/{auditorium_id}:
+    get:
+      tags:
+        - auditorium
+      summary:
+          Get auditorium details 
+      parameters:
+        - name: cinema_id
+          in: path
+          description: cinema_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: auditorium_id
+          in: path
+          description: auditorium_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags:
+        - auditorium
+      summary: Update auditorium
+      parameters:
+        - name: cinema_id
+          in: path
+          description: cinema_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: auditorium_id
+          in: path
+          description: auditorium_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Auditorium'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      tags:
+        - auditorium
+      parameters:
+        - name: cinema_id
+          in: path
+          description: ID of cinema that needs to be fetched
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: auditorium_id
+          in: path
+          description: ID of auditorium that needs to be fetched
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /movie:
+    get:
+      tags:
+        - movie
+      summary:
+           List movies       
+      parameters:
+        - name: genre
+          in: query
+          description: genre of movie
+          required: true
+          schema:
+            type: string
+        - name: age
+          in: query
+          description: age allowed
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: raiting
+          in: query
+          description: rating of the movie
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: distance
+          in: query
+          description: distance of the cinema
+          required: true
+          schema:
+            type: number
+        - name: cinema
+          in: query
+          description: name of the cinema
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+  /movie/{movie_id}:
+    get:
+      tags:
+        - movie
+      summary:
+          Get movie details
+      parameters:
+        - name: movie_id
+          in: path
+          description: movie_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+  /movie/{movie_id}/screening:
+    get:
+      tags:
+        - screening
+      summary:
+          List screening
+      parameters:
+        - name: movie_id
+          in: path
+          description: movie_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Screening'
+    post:
+      tags:
+        - screening
+      summary: Create screening
+      parameters:
+        - name: movie_id
+          in: path
+          description: movie_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Screening'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Screening'
+  /movie/{movie_id}/screening/{screening_id}:
+    get:
+      tags:
+        - screening
+      summary:
+          Get screening details
+      parameters:
+        - name: movie_id
+          in: path
+          description: movie_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: screening_id
+          in: path
+          description: screening_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      tags:
+        - screening
+      parameters:
+        - name: movie_id
+          in: path
+          description: ID of movie that needs to be fetched
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: screening_id
+          in: path
+          description: ID of screening that needs to be fetched
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /movie/screening:
+    get:
+      tags:
+        - screening
+      summary:
+        List all user screening (with token)
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /checkout:
+    post:
+      tags:
+        - checkout
+      summary: Checkout
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Checkout'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checkout'
+components:
+  schemas:
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user@domain.com
+        password:
+          type: string
+          example: 12345
+    User:
+      type: object
+      properties:
+        avatar:
+          type: string
+          example: htpp://domain.com
+        companyName:
+          type: string
+          example: Company
+        fullName:
+          type: string
+          example: John James
+        email:
+          type: string
+          example: john@email.com
+        password:
+          type: string
+          example: '12345'
+    Movie:
+      type: object
+      properties:
+        movieId:
+          type: integer
+          format: int64
+          example: 1
+        genre:
+          type: string
+    Cinema:
+      type: object
+      properties:
+        name:
+          type: string
+          example: MyCinema
+        address:
+          type: array
+          xml:
+            name: addresses
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/Address'
+      xml:
+        name: customer
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+          example: 437 Lytton
+        city:
+          type: string
+          example: Palo Alto
+        state:
+          type: string
+          example: CA
+        zip:
+          type: string
+          example: '94301'
+    Screening:
+      type: object
+      properties:
+        auditoriumId:
+          type: integer
+          format: int64
+          example: 1
+        dateTime:
+          type: string
+          format: date-time
+    Auditorium:
+      type: object
+      properties:
+        name:
+          type: string
+        rows:
+          type: integer
+          format: int64
+        seatsPerRow:
+          type: integer
+          format: int64
+    Rate:
+      type: object
+      properties:
+        movieId:
+          type: integer
+          format: int64
+          example: 10
+        rate:
+          type: integer
+          format: int64
+          example: 10
+        comment:
+          type: string
+          example: Excelent
+    Checkout:
+      type: object
+      properties:
+        screeningId:
+          type: integer
+          format: int64
+          example: 10
+        userId:
+          type: integer
+          format: int64
+          example: 10
+        seats:
+          type: string
+          example: A1,B2
