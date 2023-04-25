@@ -35,13 +35,7 @@ paths:
     get:
       tags:
         - misc
-      summary: Health status 
-      requestBody:
-        content: 
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-        required: true
+      summary: Health status
       responses:
         '200':
           description: Successful operation
@@ -49,7 +43,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-paths:
   /auths/loginPrivate:
     post:
       tags:
@@ -108,12 +101,6 @@ paths:
       tags:
         - auths
       summary: Logout
-      requestBody:
-        content: 
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-        required: true
       responses:
         '200':
           description: Successful operation
