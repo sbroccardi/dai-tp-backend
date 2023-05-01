@@ -16,6 +16,7 @@ import { GoogleOAuthGuard } from './google/google-oauth.guard';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  // Private
   @UseGuards(LocalAuthGuard)
   @Post('loginPrivate')
   async loginPrivate(@Request() req) {
@@ -28,6 +29,7 @@ export class AuthController {
     return req.user;
   }
 
+  // Public
   @Get('loginPublic')
   @UseGuards(GoogleOAuthGuard)
   async googleAuth(@Request() req) {}

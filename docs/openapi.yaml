@@ -50,7 +50,7 @@ paths:
         content: 
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Login'
         required: true
       responses:
         '200':
@@ -58,51 +58,37 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          description: Invalid username supplied
-        '404':
-          description: User not found
+                $ref: '#/components/schemas/AccessToken'
+        '401':
+          description: Invalid username or password supplied
   /auths/loginPublic:
-    post:
+    get:
       tags:
         - auths
-      summary: Public login 
-      requestBody:
-        content: 
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-        required: true
+      summary: Public login
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          description: Bad request
+                $ref: '#/components/schemas/AccessToken'
+        '401':
+          description: Can't log in with Google
   /auths:
     put:
       tags:
         - auths
       summary: Refresh token
-      requestBody:
-        content: 
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-        required: true
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/AccessToken'
         '401':
-          description: authorization information missing or invalid
+          description: refresh token missing or invalid
     delete:
       tags:
         - auths
@@ -110,8 +96,6 @@ paths:
       responses:
         '200':
           description: Successful operation
-        '401':
-          description: authorization information missing or invalid
   /users:
     post:
       tags:
@@ -121,7 +105,7 @@ paths:
         content: 
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Register'
         required: true
       responses:
         '201':
@@ -129,9 +113,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/AccessToken'
         '400':
           description: Bad request
+        '409':
+          description: Source Already Exists
   /users/resetpassword:
     post:
       tags:
@@ -147,25 +133,8 @@ paths:
       responses:
         '200':
           description: Successful operation
-        '404':
-          description: User not found
-  /users/resendcode:
-    post:
-      tags:
-        - users
-      summary: Resend code
-      parameters:
-        - name: email
-          in: query
-          description: email
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful operation
-        '404':
-          description: User not found
+        '400':
+          description: Bad request
   /users/confirmcode:
     post:
       tags:
@@ -187,8 +156,6 @@ paths:
       responses:
         '200':
           description: Successful operation
-        '404':
-          description: User not found
         '400':
           description: Invalid code
   /users/{user_id}/changepassword:
@@ -261,7 +228,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Profile'
         '404':
           description: User not found
         '401':
@@ -282,18 +249,20 @@ paths:
         content: 
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Register'
       responses:
         '201':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '404':
-          description: User not found
+                $ref: '#/components/schemas/Profile'
+        '400':
+          description: Bad request
         '401':
           description: Unauthorized
+        '404':
+          description: Resource not found
     delete:
       tags:
         - users
@@ -308,10 +277,6 @@ paths:
       responses:
         '200':
           description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
         '404':
           description: User not found
         '401':
@@ -336,7 +301,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User
+                type: array
+                items:
+                  $ref: '#/components/schemas/Purchase'
         '404':
           description: User not found
         '401':
@@ -358,16 +325,22 @@ paths:
         content: 
           application/json:
             schema:
-              $ref: '#/components/schemas/Rate'
+              $ref: '#/components/schemas/Comment'
       responses:
         '201':
           description: Resource created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Rate'
+                $ref: '#/components/schemas/Comment'
+        '400':
+          description: Bad request
         '401':
           description: Unauthorized
+        '404':
+          description: Resource not found
+        '409':
+          description: Source Already Exists
   /cinemas:
     post:
       tags:
@@ -384,29 +357,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Cinema'
         '400':
           description: Bad request
-        '409':
-          description: Source Already Exists
         '401':
           description: Unauthorized
+        '409':
+          description: Source Already Exists
     get:
       tags:
         - cinemas
       summary:
-          List user cinema (with token)  
+          List user's cinemas
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '404':
-          description: User not found
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cinema'
         '401':
           description: Unauthorized
+        '404':
+          description: User not found
   /cinemas/{cinema_id}:
     get:
       tags:
@@ -427,11 +402,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '404':
-          description: Resource not found
+                $ref: '#/components/schemas/Cinema'
         '401':
           description: Unauthorized
+        '404':
+          description: Resource not found
     put:
       tags:
         - cinemas
@@ -455,9 +430,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Cinema'
         '401':
           description: Unauthorized
+        '404':
+          description: Resource not found
     delete:
       tags:
         - cinemas
@@ -472,16 +449,15 @@ paths:
       responses:
         '200':
           description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
         '404':
           description: Resource not found
   /cinemas/{cinema_id}/auditoriums:
     get:
       tags:
         - auditoriums
+      summary: List cinema's auditoriums
       parameters:
         - name: cinema_id
           in: path
@@ -496,7 +472,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Auditorium'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Resource not found
     post:
       tags:
         - auditoriums
@@ -513,17 +497,22 @@ paths:
         content: 
           application/json:
             schema:
-              $ref: '#/components/schemas/Cinema'
+              $ref: '#/components/schemas/Auditorium'
       responses:
         '201':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Auditorium'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Resource not found
         '409':
           description: Source Already Exists
-          
   /cinemas/{cinema_id}/auditoriums/{auditorium_id}:
     get:
       tags:
@@ -551,7 +540,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Auditorium'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Resource not found
     put:
       tags:
         - auditoriums
@@ -582,7 +575,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Auditorium'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Resource not found
     delete:
       tags:
         - auditoriums
@@ -604,10 +601,10 @@ paths:
       responses:
         '200':
           description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Resource not found
   /movies:
     get:
       tags:
@@ -653,7 +650,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Movie'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        '401':
+          description: Unauthorized
   /movies/{movie_id}:
     get:
       tags:
@@ -675,6 +676,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Movie'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Resource not found
   /movies/{movie_id}/screenings:
     get:
       tags:
@@ -695,7 +700,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Screening'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Screening'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Resource not found
     post:
       tags:
         - screenings
@@ -720,6 +731,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Screening'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Resource not found
+        '409':
+          description: Source Already Exists
   /movies/{movie_id}/screenings/{screening_id}:
     get:
       tags:
@@ -747,7 +766,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Screening'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Resource not found
     delete:
       tags:
         - screenings
@@ -769,10 +792,10 @@ paths:
       responses:
         '200':
           description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Resource not found
   /movies/screenings:
     get:
       tags:
@@ -785,7 +808,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Screening'
+        '401':
+          description: Unauthorized
   /checkout:
     post:
       tags:
@@ -802,7 +829,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Checkout'
+                $ref: '#/components/schemas/Purchase'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Resource not found
 components:
   schemas:
     Login:
@@ -814,7 +847,25 @@ components:
         password:
           type: string
           example: 12345
-    User:
+    AccessToken:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+        refreshToken:
+          type: string
+          example: eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6
+    NewPassword:
+      type: object
+      properties:
+        resetCode:
+          type: string
+          example: 1234
+        newPassword:
+          type: string
+          example: newP4ssw0rd
+    Register:
       type: object
       properties:
         avatar:
@@ -831,7 +882,26 @@ components:
           example: john@email.com
         password:
           type: string
-          example: '12345'
+          example: p4ssw0rd
+    Profile:
+      type: object
+      properties:
+        profileId:
+          type: integer
+          format: int64
+          example: 1
+        avatar:
+          type: string
+          example: htpp://domain.com
+        companyName:
+          type: string
+          example: Company
+        fullName:
+          type: string
+          example: John James
+        email:
+          type: string
+          example: john@email.com
     Movie:
       type: object
       properties:
@@ -839,23 +909,28 @@ components:
           type: integer
           format: int64
           example: 1
+        name:
+          type: string
         genre:
           type: string
+        age:
+          type: string
+        rating:
+          type: integer
+          format: int64
+          example: 5
     Cinema:
       type: object
       properties:
+        cinemaId:
+          type: integer
+          format: int64
+          example: 1
         name:
           type: string
           example: MyCinema
         address:
-          type: array
-          xml:
-            name: addresses
-            wrapped: true
-          items:
-            $ref: '#/components/schemas/Address'
-      xml:
-        name: customer
+          $ref: '#/components/schemas/Address'
     Address:
       type: object
       properties:
@@ -871,9 +946,23 @@ components:
         zip:
           type: string
           example: '94301'
+        lat:
+          type: number
+          example: 1.1
+        lng:
+          type: number
+          example: 0.1
     Screening:
       type: object
       properties:
+        screeningId:
+          type: integer
+          format: int64
+          example: 1
+        movieId:
+          type: integer
+          format: int64
+          example: 1
         auditoriumId:
           type: integer
           format: int64
@@ -884,6 +973,14 @@ components:
     Auditorium:
       type: object
       properties:
+        auditoriumId:
+          type: integer
+          format: int64
+          example: 1
+        cinemaId:
+          type: integer
+          format: int64
+          example: 1
         name:
           type: string
         rows:
@@ -892,20 +989,39 @@ components:
         seatsPerRow:
           type: integer
           format: int64
-    Rate:
+    Comment:
       type: object
       properties:
         movieId:
           type: integer
           format: int64
-          example: 10
+          example: 1
+        purchaseId:
+          type: integer
+          format: int64
+          example: 1
         rate:
           type: integer
           format: int64
-          example: 10
+          example: 5
         comment:
           type: string
           example: Excelent
+    Purchase:
+      type: object
+      properties:
+        purchaseId:
+          type: integer
+          format: int64
+          example: 1
+        movieId:
+          type: integer
+          format: int64
+          example: 1
+        checkout:
+          $ref: '#/components/schemas/Checkout'
+        comment:
+          $ref: '#/components/schemas/Comment'
     Checkout:
       type: object
       properties:
