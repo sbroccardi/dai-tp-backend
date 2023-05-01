@@ -7,16 +7,20 @@ info:
     Some useful links:
     - [Frontend repository](https://github.com/sbroccardi/dai-tp-frontend)
     - [Backend repository](https://github.com/sbroccardi/dai-tp-backend)
-    - [The source API definition for ScreenSpace API](https://github.com/sbroccardi/dai-tp-backend/blob/main/openapi.yaml)
+    - [The source API definition for ScreenSpace API](https://github.com/sbroccardi/dai-tp-backend/blob/main/docs/openapi.yaml)
   termsOfService: https://github.com/sbroccardi/dai-tp-backend/blob/main/terms.txt
   contact:
     email: sgilbroccardi@uade.edu.ar
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.11
-servers:
-  - url: https://screenspace.swagger.io/api/v3
+  version: 1.0.0
+servers: [
+    {
+      url: "https://localhost/api/v1",
+      description: "Development server"
+    }
+  ]
 tags:
   - name: auths
     description: Session operations
@@ -158,15 +162,15 @@ paths:
           description: Successful operation
         '400':
           description: Invalid code
-  /users/{user_id}/changepassword:
+  /users/{userId}/changepassword:
     post:
       tags:
         - users
       summary: Change password
       parameters:
-        - name: user_id
+        - name: userId
           in: path
-          description: user_id
+          description: User ID
           required: true
           schema:
             type: integer
@@ -183,16 +187,16 @@ paths:
           description: User not found
         '400':
           description: Invalid code
-  /users/{user_id}:
+  /users/{userId}:
     get:
       tags:
         - users
       summary:
         Get an user profile
       parameters:
-        - name: user_id
+        - name: userId
           in: path
-          description: user_id
+          description: User ID
           required: true
           schema:
             type: integer
@@ -208,16 +212,16 @@ paths:
           description: User not found
         '401':
           description: Unauthorized
-  /users/{user_id}/me:
+  /users/{userId}/me:
     get:
       tags:
         - users
       summary:
         Get user profile
       parameters:
-        - name: user_id
+        - name: userId
           in: path
-          description: user_id
+          description: User ID
           required: true
           schema:
             type: integer
@@ -238,9 +242,9 @@ paths:
         - users
       summary: Update user profile
       parameters:
-        - name: user_id
+        - name: userId
           in: path
-          description: user_id
+          description: User ID
           required: true
           schema:
             type: integer
@@ -267,9 +271,9 @@ paths:
       tags:
         - users
       parameters:
-        - name: user_id
+        - name: userId
           in: path
-          description: ID of user that needs to be fetched
+          description: User ID
           required: true
           schema:
             type: integer
@@ -281,16 +285,16 @@ paths:
           description: User not found
         '401':
           description: Unauthorized
-  /users/{user_id}/purchases:
+  /users/{userId}/purchases:
     get:
       tags:
         - users
       summary:
           Get user purchases
       parameters:
-        - name: user_id
+        - name: userId
           in: path
-          description: user_id
+          description: User ID
           required: true
           schema:
             type: integer
@@ -308,15 +312,15 @@ paths:
           description: User not found
         '401':
           description: Unauthorized
-  /movies/{movie_id}/comments: 
+  /movies/{movieId}/comments: 
     post:
       tags:
         - movies
       summary: Rate & comment movie
       parameters:
-        - name: movie_id
+        - name: movieId
           in: path
-          description: movie_id
+          description: Movie ID
           required: true
           schema:
             type: integer
@@ -382,16 +386,16 @@ paths:
           description: Unauthorized
         '404':
           description: User not found
-  /cinemas/{cinema_id}:
+  /cinemas/{cinemaId}:
     get:
       tags:
         - cinemas
       summary:
           Get cinema details
       parameters:
-        - name: cinema_id
+        - name: cinemaId
           in: path
-          description: cinema_id
+          description: Cinema ID
           required: true
           schema:
             type: integer
@@ -412,9 +416,9 @@ paths:
         - cinemas
       summary: Update cinema
       parameters:
-        - name: cinema_id
+        - name: cinemaId
           in: path
-          description: cinema_id
+          description: Cinema ID
           required: true
           schema:
             type: integer
@@ -439,9 +443,9 @@ paths:
       tags:
         - cinemas
       parameters:
-        - name: cinema_id
+        - name: cinemaId
           in: path
-          description: ID of cinema that needs to be fetched
+          description: Cinema ID
           required: true
           schema:
             type: integer
@@ -453,15 +457,15 @@ paths:
           description: Unauthorized
         '404':
           description: Resource not found
-  /cinemas/{cinema_id}/auditoriums:
+  /cinemas/{cinemaId}/auditoriums:
     get:
       tags:
         - auditoriums
       summary: List cinema's auditoriums
       parameters:
-        - name: cinema_id
+        - name: cinemaId
           in: path
-          description: ID of cinema that needs to be fetched
+          description: Cinema ID
           required: true
           schema:
             type: integer
@@ -486,9 +490,9 @@ paths:
         - auditoriums
       summary: Create auditorium
       parameters:
-        - name: cinema_id
+        - name: cinemaId
           in: path
-          description: cinema_id
+          description: Cinema ID
           required: true
           schema:
             type: integer
@@ -513,23 +517,23 @@ paths:
           description: Resource not found
         '409':
           description: Source Already Exists
-  /cinemas/{cinema_id}/auditoriums/{auditorium_id}:
+  /cinemas/{cinemaId}/auditoriums/{auditoriumId}:
     get:
       tags:
         - auditoriums
       summary:
           Get auditorium details
       parameters:
-        - name: cinema_id
+        - name: cinemaId
           in: path
-          description: cinema_id
+          description: Cinema ID
           required: true
           schema:
             type: integer
             format: int64
-        - name: auditorium_id
+        - name: auditoriumId
           in: path
-          description: auditorium_id
+          description: Auditorium ID
           required: true
           schema:
             type: integer
@@ -550,16 +554,16 @@ paths:
         - auditoriums
       summary: Update auditorium
       parameters:
-        - name: cinema_id
+        - name: cinemaId
           in: path
-          description: cinema_id
+          description: Cinema ID
           required: true
           schema:
             type: integer
             format: int64
-        - name: auditorium_id
+        - name: auditoriumId
           in: path
-          description: auditorium_id
+          description: Auditorium ID
           required: true
           schema:
             type: integer
@@ -584,16 +588,16 @@ paths:
       tags:
         - auditoriums
       parameters:
-        - name: cinema_id
+        - name: cinemaId
           in: path
-          description: ID of cinema that needs to be fetched
+          description: Cinema ID
           required: true
           schema:
             type: integer
             format: int64
-        - name: auditorium_id
+        - name: auditoriumId
           in: path
-          description: ID of auditorium that needs to be fetched
+          description: Auditorium ID
           required: true
           schema:
             type: integer
@@ -638,12 +642,13 @@ paths:
           required: true
           schema:
             type: number
-        - name: cinema
+        - name: cinemaId
           in: query
-          description: name of the cinema
+          description: Cinema ID
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         '200':
           description: Successful operation
@@ -655,16 +660,16 @@ paths:
                   $ref: '#/components/schemas/Movie'
         '401':
           description: Unauthorized
-  /movies/{movie_id}:
+  /movies/{movieId}:
     get:
       tags:
         - movies
       summary:
           Get movie details
       parameters:
-        - name: movie_id
+        - name: movieId
           in: path
-          description: movie_id
+          description: Movie ID
           required: true
           schema:
             type: integer
@@ -680,16 +685,16 @@ paths:
           description: Unauthorized
         '404':
           description: Resource not found
-  /movies/{movie_id}/screenings:
+  /movies/{movieId}/screenings:
     get:
       tags:
         - screenings
       summary:
           List screening
       parameters:
-        - name: movie_id
+        - name: movieId
           in: path
-          description: movie_id
+          description: Movie ID
           required: true
           schema:
             type: integer
@@ -712,9 +717,9 @@ paths:
         - screenings
       summary: Create screening
       parameters:
-        - name: movie_id
+        - name: movieId
           in: path
-          description: movie_id
+          description: Movie ID
           required: true
           schema:
             type: integer
@@ -739,23 +744,23 @@ paths:
           description: Resource not found
         '409':
           description: Source Already Exists
-  /movies/{movie_id}/screenings/{screening_id}:
+  /movies/{movieId}/screenings/{screeningId}:
     get:
       tags:
         - screenings
       summary:
           Get screening details
       parameters:
-        - name: movie_id
+        - name: movieId
           in: path
-          description: movie_id
+          description: Movie ID
           required: true
           schema:
             type: integer
             format: int64
-        - name: screening_id
+        - name: screeningId
           in: path
-          description: screening_id
+          description: Screening ID
           required: true
           schema:
             type: integer
@@ -775,16 +780,16 @@ paths:
       tags:
         - screenings
       parameters:
-        - name: movie_id
+        - name: movieId
           in: path
-          description: ID of movie that needs to be fetched
+          description: Movie ID
           required: true
           schema:
             type: integer
             format: int64
-        - name: screening_id
+        - name: screeningId
           in: path
-          description: ID of screening that needs to be fetched
+          description: Screening ID
           required: true
           schema:
             type: integer
@@ -801,7 +806,7 @@ paths:
       tags:
         - screenings
       summary:
-        List all user screening (with token)
+        List all user's screenings
       responses:
         '200':
           description: Successful operation
@@ -870,10 +875,10 @@ components:
       properties:
         avatar:
           type: string
-          example: htpp://domain.com
+          example: htpp://domain.com/avatar.png
         companyName:
           type: string
-          example: Company
+          example: My Company
         fullName:
           type: string
           example: John James
@@ -882,6 +887,7 @@ components:
           example: john@email.com
         password:
           type: string
+          format: password
           example: p4ssw0rd
     Profile:
       type: object
@@ -892,10 +898,10 @@ components:
           example: 1
         avatar:
           type: string
-          example: htpp://domain.com
+          example: htpp://domain.com/avatar.png
         companyName:
           type: string
-          example: Company
+          example: My Company
         fullName:
           type: string
           example: John James
@@ -928,7 +934,7 @@ components:
           example: 1
         name:
           type: string
-          example: MyCinema
+          example: My Cinema
         address:
           $ref: '#/components/schemas/Address'
     Address:
@@ -948,10 +954,10 @@ components:
           example: '94301'
         lat:
           type: number
-          example: 1.1
+          example: -34.603772
         lng:
           type: number
-          example: 0.1
+          example: -58.381607
     Screening:
       type: object
       properties:
@@ -1034,5 +1040,7 @@ components:
           format: int64
           example: 10
         seats:
-          type: string
-          example: A1,B2
+          type: array
+          items: 
+            type: string
+          example: ['A1', 'B2']
