@@ -1,24 +1,41 @@
 import { Injectable } from '@nestjs/common';
-
-// This should be a real class/interface representing a user entity
-export type User = any;
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'sbroccardi@gmail.com',
-      password: 'pass',
-    },
-    {
-      userId: 2,
-      username: 'user@domain.com',
-      password: 'password',
-    },
-  ];
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find((user) => user.username === username);
+  async create(createUserDto: CreateUserDto): Promise<UserDocument> {
+    const createdUser = new this.userModel(createUserDto);
+    return createdUser.save();
+  }
+
+  async findAll(): Promise<UserDocument[]> {
+    return this.userModel.find().exec();
+  }
+
+  async findById(id: string): Promise<UserDocument> {
+    return this.userModel.findById(id);
+  }
+
+  async findByEmail(email: string): Promise<UserDocument> {
+    return this.userModel.findOne({ email }).exec();
+  }
+
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserDocument> {
+    return this.userModel
+      .findByIdAndUpdate(id, updateUserDto, { new: true })
+      .exec();
+  }
+
+  async remove(id: string): Promise<UserDocument> {
+    return this.userModel.findByIdAndDelete(id).exec();
   }
 }

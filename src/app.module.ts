@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -11,10 +12,11 @@ import { UsersModule } from './users/users.module';
       envFilePath: ['.env', '.development.env'],
       isGlobal: true,
     }),
-    AuthModule,
+    MongooseModule.forRoot('mongodb+srv://app_distrib:Admin.Root.6699@cluster0.advskhj.mongodb.net/?retryWrites=true&w=majority'),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

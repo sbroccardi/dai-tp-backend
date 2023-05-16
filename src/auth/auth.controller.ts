@@ -2,41 +2,44 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Post,
-  Request,
+  Req,
   UseGuards,
 } from '@nestjs/common';
-
+import { Request } from 'express';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt/jwt-auth.guard';
-import { LocalAuthGuard } from './local/local-auth.guard';
-import { GoogleOAuthGuard } from './google/google-oauth.guard';
+import { AuthDto } from './dto/auth.dto';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
+import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
-  // Private
-  @UseGuards(LocalAuthGuard)
-  @Post('loginPrivate')
-  async loginPrivate(@Request() req) {
-    return this.authService.login(req.user);
+  @Post('signup')
+  signup(@Body() createUserDto: CreateUserDto) {
+    return this.authService.signUp(createUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('profilePrivate')
-  getProfilePrivate(@Request() req) {
-    return req.user;
+  @Post('signin')
+  signin(@Body() data: AuthDto) {
+    return this.authService.signIn(data);
   }
 
-  // Public
-  @Get('loginPublic')
-  @UseGuards(GoogleOAuthGuard)
-  async googleAuth(@Request() req) {}
+  @UseGuards(AccessTokenGuard)
+  @Get('logout')
+  logout(@Req() req: Request) {
+    this.authService.logout(req.user['sub']);
+  }
 
-  @Get('google-redirect')
-  @UseGuards(GoogleOAuthGuard)
-  googleAuthRedirect(@Request() req) {
-    return this.authService.googleLogin(req);
+  @UseGuards(RefreshTokenGuard)
+  @Get('refresh')
+  refreshTokens(@Req() req: Request) {
+    const userId = req.user['sub'];
+    const refreshToken = req.user['refreshToken'];
+    return this.authService.refreshTokens(userId, refreshToken);
   }
 }
