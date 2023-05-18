@@ -12,11 +12,13 @@ import { AuthModule } from './auth/auth.module';
       envFilePath: ['.env', '.development.env'],
       isGlobal: true,
     }),
-    MongooseModule.forRoot('mongodb+srv://app_distrib:Admin.Root.6699@cluster0.advskhj.mongodb.net/?retryWrites=true&w=majority'),
+    MongooseModule.forRoot(
+      'mongodb+srv://app_distrib:Admin.Root.6699@cluster0.advskhj.mongodb.net/?retryWrites=true&w=majority',
+    ),
     UsersModule,
     AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
