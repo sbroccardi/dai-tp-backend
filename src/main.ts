@@ -10,12 +10,13 @@ async function bootstrap() {
     .setTitle('ScreenSpace API')
     .setDescription('The ScreenSpace API description')
     .setVersion('1.0')
-    .addTag('auth')
+    .addTag('auths')
     .addTag('users')
     .addTag('movies')
-    .addTag('screenings')
+    .addTag('misc')
     .addTag('cinemas')
     .addTag('auditoriums')
+    //.addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
