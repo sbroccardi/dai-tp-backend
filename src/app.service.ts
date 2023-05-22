@@ -20,6 +20,8 @@ export class AppService {
   }
 
   getHealth(): string {
-    return JSON.parse('{"Downstream Operation Status": "OK", "Database connection": "OK"}');
+    return JSON.parse(
+      '{"Downstream Operation Status": "OK", "Database connection": "OK"}',
+    );
   }
 }

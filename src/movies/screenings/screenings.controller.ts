@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -22,7 +31,10 @@ export class ScreeningsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie not found.' })
   @ApiResponse({ status: 409, description: 'Screening already exists.' })
-  create(@Param('movieId') movieId: string, @Body() createScreeningDto: CreateScreeningDto) {
+  create(
+    @Param('movieId') movieId: string,
+    @Body() createScreeningDto: CreateScreeningDto,
+  ) {
     return this.screeningsService.create(createScreeningDto);
   }
 
@@ -41,7 +53,7 @@ export class ScreeningsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie or screening not found.' })
   findOne(@Param('movieId') movieId: string, @Param('id') id: string) {
-    return this.screeningsService.findOne(+id);
+    return this.screeningsService.findById(id);
   }
 
   @Put(':id')
@@ -49,8 +61,12 @@ export class ScreeningsController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie or screening not found.' })
-  update(@Param('movieId') movieId: string, @Param('id') id: string, @Body() updateScreeningDto: UpdateScreeningDto) {
-    return this.screeningsService.update(+id, updateScreeningDto);
+  update(
+    @Param('movieId') movieId: string,
+    @Param('id') id: string,
+    @Body() updateScreeningDto: UpdateScreeningDto,
+  ) {
+    return this.screeningsService.update(id, updateScreeningDto);
   }
 
   @Delete(':id')
@@ -59,6 +75,6 @@ export class ScreeningsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie or screening not found.' })
   remove(@Param('movieId') movieId: string, @Param('id') id: string) {
-    return this.screeningsService.remove(+id);
+    return this.screeningsService.remove(id);
   }
 }

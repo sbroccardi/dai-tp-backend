@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -31,7 +39,6 @@ export class CheckoutsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Checkout not found.' })
   findOne(@Param('id') id: string) {
-    return this.checkoutsService.findOne(+id);
+    return this.checkoutsService.findById(id);
   }
-
 }

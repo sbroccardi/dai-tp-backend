@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -40,7 +49,7 @@ export class CinemasController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Resource not found.' })
   findOne(@Param('id') id: string) {
-    return this.cinemasService.findOne(+id);
+    return this.cinemasService.findById(id);
   }
 
   @Put(':id')
@@ -49,7 +58,7 @@ export class CinemasController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema not found.' })
   update(@Param('id') id: string, @Body() updateCinemaDto: UpdateCinemaDto) {
-    return this.cinemasService.update(+id, updateCinemaDto);
+    return this.cinemasService.update(id, updateCinemaDto);
   }
 
   @Delete(':id')
@@ -58,6 +67,6 @@ export class CinemasController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema not found.' })
   remove(@Param('id') id: string) {
-    return this.cinemasService.remove(+id);
+    return this.cinemasService.remove(id);
   }
 }

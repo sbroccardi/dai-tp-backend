@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -22,7 +31,10 @@ export class AuditoriumsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema not found.' })
   @ApiResponse({ status: 409, description: 'Auditorium already exists.' })
-  create(@Param('cinemaId') cinemaId: string, @Body() createAuditoriumDto: CreateAuditoriumDto) {
+  create(
+    @Param('cinemaId') cinemaId: string,
+    @Body() createAuditoriumDto: CreateAuditoriumDto,
+  ) {
     return this.auditoriumsService.create(createAuditoriumDto);
   }
 
@@ -41,8 +53,11 @@ export class AuditoriumsController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema or Auditorium not found.' })
-  findOne(@Param('cinemaId') cinemaId: string, @Param('auditoriumId') auditoriumId: string) {
-    return this.auditoriumsService.findOne(auditoriumId);
+  findOne(
+    @Param('cinemaId') cinemaId: string,
+    @Param('auditoriumId') auditoriumId: string,
+  ) {
+    return this.auditoriumsService.findById(auditoriumId);
   }
 
   @Put(':auditoriumId')
@@ -50,7 +65,11 @@ export class AuditoriumsController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema or Auditorium not found.' })
-  update(@Param('cinemaId') cinemaId: string, @Param('auditoriumId') auditoriumId: string, @Body() updateAuditoriumDto: UpdateAuditoriumDto) {
+  update(
+    @Param('cinemaId') cinemaId: string,
+    @Param('auditoriumId') auditoriumId: string,
+    @Body() updateAuditoriumDto: UpdateAuditoriumDto,
+  ) {
     return this.auditoriumsService.update(auditoriumId, updateAuditoriumDto);
   }
 
@@ -59,7 +78,10 @@ export class AuditoriumsController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema or Auditorium not found.' })
-  remove(@Param('cinemaId') cinemaId: string, @Param('auditoriumId') auditoriumId: string) {
+  remove(
+    @Param('cinemaId') cinemaId: string,
+    @Param('auditoriumId') auditoriumId: string,
+  ) {
     return this.auditoriumsService.remove(auditoriumId);
   }
 }

@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -8,13 +17,17 @@ import {
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
-import { CommentMovieDto } from './dto/comment-movie.dto';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { CommentsService } from './comments.service';
 
 //@ApiBearerAuth()
 @ApiTags('movies')
 @Controller('movies')
 export class MoviesController {
-  constructor(private readonly moviesService: MoviesService) {}
+  constructor(
+    private readonly moviesService: MoviesService,
+    private readonly commentsService: CommentsService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Create movie' })
@@ -40,7 +53,7 @@ export class MoviesController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie not found.' })
   findOne(@Param('id') id: string) {
-    return this.moviesService.findOne(+id);
+    return this.moviesService.findById(id);
   }
 
   @Post('{id}/comments')
@@ -49,8 +62,8 @@ export class MoviesController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie not found.' })
-  comment(@Param('id') id: string, @Body() commentMovieDto: CommentMovieDto) {
-    return this.moviesService.comment(commentMovieDto);
+  comment(@Param('id') id: string, @Body() createCommentDto: CreateCommentDto) {
+    return this.commentsService.create(createCommentDto);
   }
 
   @Put(':id')
@@ -60,7 +73,7 @@ export class MoviesController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie not found.' })
   update(@Param('id') id: string, @Body() updateMovieDto: UpdateMovieDto) {
-    return this.moviesService.update(+id, updateMovieDto);
+    return this.moviesService.update(id, updateMovieDto);
   }
 
   @Delete(':id')
@@ -70,6 +83,6 @@ export class MoviesController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie not found.' })
   remove(@Param('id') id: string) {
-    return this.moviesService.remove(+id);
+    return this.moviesService.remove(id);
   }
 }

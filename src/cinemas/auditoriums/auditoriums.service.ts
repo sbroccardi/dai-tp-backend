@@ -1,26 +1,42 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateAuditoriumDto } from './dto/create-auditorium.dto';
 import { UpdateAuditoriumDto } from './dto/update-auditorium.dto';
+import { Auditorium, AuditoriumDocument } from '../schemas/auditorium.schema';
 
 @Injectable()
 export class AuditoriumsService {
-  create(createAuditoriumDto: CreateAuditoriumDto) {
-    return 'This action adds a new auditorium';
+  constructor(
+    @InjectModel(Auditorium.name)
+    private auditoriumModel: Model<AuditoriumDocument>,
+  ) {}
+
+  async create(
+    createAuditoriumDto: CreateAuditoriumDto,
+  ): Promise<AuditoriumDocument> {
+    const createdAuditorium = new this.auditoriumModel(createAuditoriumDto);
+    return createdAuditorium.save();
   }
 
-  findAll() {
-    return `This action returns all auditoriums`;
+  async findAll(): Promise<AuditoriumDocument[]> {
+    return this.auditoriumModel.find().exec();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} auditorium`;
+  async findById(id: string): Promise<AuditoriumDocument> {
+    return this.auditoriumModel.findById(id);
   }
 
-  update(id: string, updateAuditoriumDto: UpdateAuditoriumDto) {
-    return `This action updates a #${id} auditorium`;
+  async update(
+    id: string,
+    updateAuditoriumDto: UpdateAuditoriumDto,
+  ): Promise<AuditoriumDocument> {
+    return this.auditoriumModel
+      .findByIdAndUpdate(id, updateAuditoriumDto, { new: true })
+      .exec();
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} auditorium`;
+  async remove(id: string): Promise<AuditoriumDocument> {
+    return this.auditoriumModel.findByIdAndDelete(id).exec();
   }
 }

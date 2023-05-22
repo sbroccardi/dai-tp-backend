@@ -1,26 +1,39 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateCinemaDto } from './dto/create-cinema.dto';
 import { UpdateCinemaDto } from './dto/update-cinema.dto';
+import { Cinema, CinemaDocument } from './schemas/cinema.schema';
 
 @Injectable()
 export class CinemasService {
-  create(createCinemaDto: CreateCinemaDto) {
-    return 'This action adds a new cinema';
+  constructor(
+    @InjectModel(Cinema.name) private cinemaModel: Model<CinemaDocument>,
+  ) {}
+
+  async create(createCinemaDto: CreateCinemaDto): Promise<CinemaDocument> {
+    const createdCinema = new this.cinemaModel(createCinemaDto);
+    return createdCinema.save();
   }
 
-  findAll() {
-    return `This action returns all cinemas`;
+  async findAll(): Promise<CinemaDocument[]> {
+    return this.cinemaModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cinema`;
+  async findById(id: string): Promise<CinemaDocument> {
+    return this.cinemaModel.findById(id);
   }
 
-  update(id: number, updateCinemaDto: UpdateCinemaDto) {
-    return `This action updates a #${id} cinema`;
+  async update(
+    id: string,
+    updateCinemaDto: UpdateCinemaDto,
+  ): Promise<CinemaDocument> {
+    return this.cinemaModel
+      .findByIdAndUpdate(id, updateCinemaDto, { new: true })
+      .exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} cinema`;
+  async remove(id: string): Promise<CinemaDocument> {
+    return this.cinemaModel.findByIdAndDelete(id).exec();
   }
 }

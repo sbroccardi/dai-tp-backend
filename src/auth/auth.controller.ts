@@ -26,7 +26,7 @@ import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
 @ApiTags('auths')
 @Controller('auths')
 export class AuthController {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   /*   @Post('signup')
     @ApiOperation({ summary: 'Register user' })
@@ -36,7 +36,10 @@ export class AuthController {
 
   @Post('loginPrivate')
   @ApiOperation({ summary: 'Private login' })
-  @ApiResponse({ status: 401, description: 'Invalid username or password supplied.' })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid username or password supplied.',
+  })
   signin(@Body() data: AuthDto) {
     return this.authService.signIn(data);
   }
@@ -51,7 +54,10 @@ export class AuthController {
   @UseGuards(RefreshTokenGuard)
   @Put()
   @ApiOperation({ summary: 'Refresh token' })
-  @ApiResponse({ status: 401, description: 'Refresh token missing or invalid.' })
+  @ApiResponse({
+    status: 401,
+    description: 'Refresh token missing or invalid.',
+  })
   refreshTokens(@Req() req: Request) {
     const userId = req.user['sub'];
     const refreshToken = req.user['refreshToken'];
@@ -64,5 +70,4 @@ export class AuthController {
   logout(@Req() req: Request) {
     this.authService.logout(req.user['sub']);
   }
-
 }

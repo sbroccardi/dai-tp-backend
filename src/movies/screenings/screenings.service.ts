@@ -1,26 +1,42 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateScreeningDto } from './dto/create-screening.dto';
 import { UpdateScreeningDto } from './dto/update-screening.dto';
+import { Screening, ScreeningDocument } from '../schemas/screening.schema';
 
 @Injectable()
 export class ScreeningsService {
-  create(createScreeningDto: CreateScreeningDto) {
-    return 'This action adds a new screening';
+  constructor(
+    @InjectModel(Screening.name)
+    private screeningModel: Model<ScreeningDocument>,
+  ) {}
+
+  async create(
+    createScreeningDto: CreateScreeningDto,
+  ): Promise<ScreeningDocument> {
+    const createdScreening = new this.screeningModel(createScreeningDto);
+    return createdScreening.save();
   }
 
-  findAll() {
-    return `This action returns all screenings`;
+  async findAll(): Promise<ScreeningDocument[]> {
+    return this.screeningModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} screening`;
+  async findById(id: string): Promise<ScreeningDocument> {
+    return this.screeningModel.findById(id);
   }
 
-  update(id: number, updateScreeningDto: UpdateScreeningDto) {
-    return `This action updates a #${id} screening`;
+  async update(
+    id: string,
+    updateScreeningDto: UpdateScreeningDto,
+  ): Promise<ScreeningDocument> {
+    return this.screeningModel
+      .findByIdAndUpdate(id, updateScreeningDto, { new: true })
+      .exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} screening`;
+  async remove(id: string): Promise<ScreeningDocument> {
+    return this.screeningModel.findByIdAndDelete(id).exec();
   }
 }

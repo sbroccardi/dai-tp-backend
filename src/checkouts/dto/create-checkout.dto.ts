@@ -1,1 +1,5 @@
-export class CreateCheckoutDto {}
+export class CreateCheckoutDto {
+  userId: string;
+  screeningId: string;
+  seats: string;
+}
