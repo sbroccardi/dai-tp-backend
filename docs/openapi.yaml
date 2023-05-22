@@ -823,7 +823,7 @@ paths:
                   $ref: '#/components/schemas/Screening'
         '401':
           description: Unauthorized
-  /checkout:
+  /checkouts:
     post:
       tags:
         - misc

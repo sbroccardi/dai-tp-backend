@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CinemasModule } from './cinemas/cinemas.module';
 import { MoviesModule } from './movies/movies.module';
+import { CheckoutsModule } from './checkouts/checkouts.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MoviesModule } from './movies/movies.module';
     AuthModule,
     CinemasModule,
     MoviesModule,
+    CheckoutsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

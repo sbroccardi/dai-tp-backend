@@ -16,6 +16,7 @@ async function bootstrap() {
     .addTag('auditoriums')
     .addTag('movies')
     .addTag('screenings')
+    .addTag('checkouts')
     .addTag('misc')
     //.addBearerAuth()
     .build();
