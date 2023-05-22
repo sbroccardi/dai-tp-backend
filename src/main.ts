@@ -12,10 +12,11 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('auths')
     .addTag('users')
-    .addTag('movies')
-    .addTag('misc')
     .addTag('cinemas')
     .addTag('auditoriums')
+    .addTag('movies')
+    .addTag('screenings')
+    .addTag('misc')
     //.addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);

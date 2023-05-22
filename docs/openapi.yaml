@@ -314,39 +314,6 @@ paths:
           description: User not found
         '401':
           description: Unauthorized
-  /movies/{movieId}/comments: 
-    post:
-      tags:
-        - movies
-      summary: Rate & comment movie
-      parameters:
-        - name: movieId
-          in: path
-          description: Movie ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        content: 
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Comment'
-      responses:
-        '201':
-          description: Resource created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Comment'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '404':
-          description: Resource not found
-        '409':
-          description: Source Already Exists
   /cinemas:
     post:
       tags:
@@ -444,6 +411,7 @@ paths:
     delete:
       tags:
         - cinemas
+      summary: Delete cinema
       parameters:
         - name: cinemaId
           in: path
@@ -506,7 +474,7 @@ paths:
               $ref: '#/components/schemas/Auditorium'
       responses:
         '201':
-          description: Successful operation
+          description: Resource created
           content:
             application/json:
               schema:
@@ -589,6 +557,7 @@ paths:
     delete:
       tags:
         - auditoriums
+      summary: Delete auditorium
       parameters:
         - name: cinemaId
           in: path
@@ -687,6 +656,39 @@ paths:
           description: Unauthorized
         '404':
           description: Resource not found
+  /movies/{movieId}/comments: 
+    post:
+      tags:
+        - movies
+      summary: Rate & comment movie
+      parameters:
+        - name: movieId
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '201':
+          description: Resource created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Resource not found
+        '409':
+          description: Source Already Exists
   /movies/{movieId}/screenings:
     get:
       tags:
@@ -781,6 +783,7 @@ paths:
     delete:
       tags:
         - screenings
+      summary: Delete screening
       parameters:
         - name: movieId
           in: path
