@@ -1,4 +1,5 @@
 export class CreateUserDto {
+  type: string;
   avatar: string;
   fullname: string;
   company: string;

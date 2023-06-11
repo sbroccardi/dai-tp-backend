@@ -3,110 +3,143 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
   Put,
+  Query,
+  Req,
+  BadRequestException,
+  Logger,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Request } from 'express';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
+import { AccessTokenGuard } from '../common/guards/accessToken.guard';
+import { ConfirmCodeDto } from '../users/dto/confirm-code.dto';
+import { ChangePasswordDto } from '../users/dto/change-password.dto';
 
-//@ApiBearerAuth()
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  private readonly logger = new Logger(UsersController.name);
+
   @Post()
-  @ApiOperation({ summary: 'Register user' })
-  @ApiResponse({ status: 400, description: 'Bad request.' })
-  @ApiResponse({ status: 409, description: 'User already exists.' })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @ApiOperation({ summary: 'Register private user' })
+  @ApiResponse({ status: 201, description: 'User created.' })
+  @ApiResponse({ status: 400, description: 'User already exists.' })
+  signup(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.signUpPrivate(createUserDto);
   }
 
-  @Post('resetpassword')
+  @Get('resetpassword')
   @ApiOperation({ summary: 'Reset password' })
+  @ApiResponse({ status: 200, description: 'Reset password email sent.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
-  resetPassword() {
-    //TODO:
-    return 'RESET PASSWORD NOT IMPLEMENTED';
+  resetPassword(@Query('email') email: string) {
+    //TODO: Add validation
+    if (!email) throw new BadRequestException('email address missing.');
+    this.usersService.resetPassword(email);
+    return 'EMAIL SENT';
   }
 
   @Post('confirmcode')
-  @ApiOperation({ summary: 'Confirm code sent' })
+  @ApiOperation({ summary: 'Confirm reset code' })
+  @ApiResponse({ status: 200, description: 'Code confirmed, get User ID' })
   @ApiResponse({ status: 400, description: 'Invalid code.' })
-  confirmCode() {
-    return 'CONFIRM CODE NOT IMPLEMENTED';
+  confirmCode(@Body() confirmCodeDto: ConfirmCodeDto) {
+    //TODO: Add validation
+    const userId = this.usersService.confirmCode(
+      confirmCodeDto.email,
+      confirmCodeDto.token,
+    );
+    return userId;
   }
 
-  @Post(':id/changepassword')
+  @Post('/changepassword')
   @ApiOperation({ summary: 'Change password' })
+  @ApiResponse({ status: 200, description: 'Password changed.' })
   @ApiResponse({ status: 400, description: 'User not found.' })
   @ApiResponse({ status: 404, description: 'Invalid code.' })
-  changePassword() {
-    //TODO:
-    return 'CHANGE PASSWORD NOT IMPLEMENTED';
+  changePassword(@Body() changePasswordDto: ChangePasswordDto) {
+    this.usersService.changePassword(
+      changePasswordDto.userId,
+      changePasswordDto.newPassword,
+      changePasswordDto.token,
+    );
+    return 'PASSWORD CHANGED';
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get users' })
+  @ApiResponse({ status: 200, description: 'List of users.' })
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get an user profile' })
+  @ApiResponse({ status: 200, description: 'User profile.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
+  @UseGuards(AccessTokenGuard)
   findById(@Param('id') id: string) {
     return this.usersService.findById(id);
   }
 
-  @Get(':id/me')
+  @Get('/me')
   @ApiOperation({ summary: 'Get user profile' })
+  @ApiResponse({ status: 200, description: 'User profile.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  findMe(@Param('id') id: string) {
+  @UseGuards(AccessTokenGuard)
+  findMe(@Req() req: Request) {
     //TODO: Add validation.
-    return this.usersService.findById(id);
+    const userId = req.user['sub'];
+    return userId;
+    //return this.usersService.findById(userId);
   }
 
-  @UseGuards(AccessTokenGuard)
-  @Put(':id')
+  @Put()
   @ApiOperation({ summary: 'Update user profile' })
+  @ApiResponse({ status: 200, description: 'User updated.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Resource not found.' })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    //TODO: Add validation.
-    return this.usersService.update(id, updateUserDto);
-  }
-
   @UseGuards(AccessTokenGuard)
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete user' })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'User not found.' })
-  remove(@Param('id') id: string) {
+  update(@Req() req: Request, @Body() updateUserDto: UpdateUserDto) {
     //TODO: Add validation.
-    return this.usersService.remove(id);
+    const userId = req.user['sub'];
+    return this.usersService.update(userId, updateUserDto);
   }
 
-  @Get(':id/purchases')
-  @ApiOperation({ summary: 'Get user purchases' })
+  @Delete()
+  @ApiOperation({ summary: 'Delete user' })
+  @ApiResponse({ status: 200, description: 'User deleted.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  getPurchases(@Param('id') id: string) {
+  @UseGuards(AccessTokenGuard)
+  remove(@Req() req: Request) {
     //TODO: Add validation.
-    return this.usersService.findPurchasesById(id);
+    const userId = req.user['sub'];
+    return this.usersService.remove(userId);
+  }
+
+  @Get('/purchases')
+  @ApiOperation({ summary: 'Get user purchases' })
+  @ApiResponse({ status: 200, description: 'List of purchases.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @UseGuards(AccessTokenGuard)
+  getPurchases(@Req() req: Request) {
+    //TODO: Add validation.
+    this.logger.error(req.user);
+    const userId = req.user['sub'];
+    this.logger.log(userId);
+    return this.usersService.findPurchasesById(userId);
   }
 }

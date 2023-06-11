@@ -2,24 +2,16 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
   Post,
   Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
 import { Request } from 'express';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { AuthDto } from './dto/auth.dto';
+import { PrivateDto } from './dto/private.dto';
+import { PublicDto } from './dto/public.dto';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
 
@@ -28,46 +20,40 @@ import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  /*   @Post('signup')
-    @ApiOperation({ summary: 'Register user' })
-    signup(@Body() createUserDto: CreateUserDto) {
-      return this.authService.signUp(createUserDto);
-    } */
-
+  @ApiOperation({ summary: 'Login for managers' })
+  @ApiResponse({ status: 200, description: 'User logged in.' })
+  @ApiResponse({ status: 401, description: 'User not found.' })
   @Post('loginPrivate')
-  @ApiOperation({ summary: 'Private login' })
-  @ApiResponse({
-    status: 401,
-    description: 'Invalid username or password supplied.',
-  })
-  signin(@Body() data: AuthDto) {
-    return this.authService.signIn(data);
+  loginPrivate(@Body() data: PrivateDto) {
+    return this.authService.signInPrivate(data);
   }
 
-  @Get('loginPublic')
-  @ApiOperation({ summary: 'Public login' })
-  @ApiResponse({ status: 401, description: 'Cant log in with Google.' })
-  login() {
-    return '';
+  @ApiOperation({ summary: 'Login for public' })
+  @ApiResponse({ status: 200, description: 'User logged in.' })
+  @ApiResponse({ status: 401, description: 'User not found.' })
+  @Post('loginPublic')
+  loginPublic(@Body() data: PublicDto) {
+    return this.authService.signInPublic(data);
   }
 
-  @UseGuards(RefreshTokenGuard)
-  @Put()
+  @ApiOperation({ summary: 'Log out user' })
+  @ApiResponse({ status: 200, description: 'User logged out.' })
+  @UseGuards(AccessTokenGuard)
+  //@Get('logout')
+  @Delete()
+  logout(@Req() req: Request) {
+    this.authService.logout(req.user['sub']);
+  }
+
   @ApiOperation({ summary: 'Refresh token' })
-  @ApiResponse({
-    status: 401,
-    description: 'Refresh token missing or invalid.',
-  })
+  @ApiResponse({ status: 200, description: 'Token refreshed.' })
+  @ApiResponse({ status: 401, description: 'User not found.' })
+  @UseGuards(RefreshTokenGuard)
+  //@Get('refresh')
+  @Put()
   refreshTokens(@Req() req: Request) {
     const userId = req.user['sub'];
     const refreshToken = req.user['refreshToken'];
     return this.authService.refreshTokens(userId, refreshToken);
-  }
-
-  @UseGuards(AccessTokenGuard)
-  @Delete()
-  @ApiOperation({ summary: 'Logout' })
-  logout(@Req() req: Request) {
-    this.authService.logout(req.user['sub']);
   }
 }

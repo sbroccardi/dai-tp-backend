@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { CinemasModule } from './cinemas/cinemas.module';
 import { MoviesModule } from './movies/movies.module';
 import { CheckoutsModule } from './checkouts/checkouts.module';
+import { JwtHelperModule } from './common/jwt/jwt.helper.module';
+import { MailModule } from './common/mail/mail.module';
 
 @Module({
   imports: [
@@ -18,8 +20,10 @@ import { CheckoutsModule } from './checkouts/checkouts.module';
     MongooseModule.forRoot(
       'mongodb+srv://app_distrib:Admin.Root.6699@cluster0.advskhj.mongodb.net/?retryWrites=true&w=majority',
     ),
-    UsersModule,
+    JwtHelperModule,
+    MailModule,
     AuthModule,
+    UsersModule,
     CinemasModule,
     MoviesModule,
     CheckoutsModule,
