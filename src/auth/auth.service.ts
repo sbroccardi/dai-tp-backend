@@ -27,25 +27,25 @@ export class AuthService {
     return tokens;
   }
 
-  async signInPublic(data: PublicDto) {
+  async signInPublic(req) {
     // Check if user exists
-    let user = await this.usersService.findByEmail(data.email);
+    let user = await this.usersService.findByEmail(req.user.email);
     if (!user) {
       // first signin, create public user
       user = await this.usersService.create({
         type: 'public',
-        fullname: data.fullName,
+        fullname: req.user.firstName + ' ' + req.user.lastName,
         company: '',
         address: '',
         password: 'none',
         refreshToken: '',
-        avatar: data.avatar,
-        email: data.email,
+        avatar: req.user.picture,
+        email: req.user.email,
       });
     }
     const tokens = await this.jwtHelperService.getTokens(user._id, user.email);
     await this.updateRefreshToken(user._id, tokens.refreshToken);
-    return tokens;
+    return { fullname: user.fullname, avatar: user.avatar, tokens };
   }
 
   async logout(userId: string) {

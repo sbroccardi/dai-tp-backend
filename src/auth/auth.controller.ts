@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Post,
   Put,
   Req,
@@ -14,6 +15,7 @@ import { PrivateDto } from './dto/private.dto';
 import { PublicDto } from './dto/public.dto';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
+import { GoogleOAuthGuard } from 'src/common/guards/google-oauth.guard';
 
 @ApiTags('auths')
 @Controller('auths')
@@ -34,6 +36,16 @@ export class AuthController {
   @Post('loginPublic')
   loginPublic(@Body() data: PublicDto) {
     return this.authService.signInPublic(data);
+  }
+
+  @Get()
+  @UseGuards(GoogleOAuthGuard)
+  async googleAuth(@Req() req: Request) {}
+
+  @Get('google-redirect')
+  @UseGuards(GoogleOAuthGuard)
+  googleAuthRedirect(@Req() req: Request) {
+    return this.authService.signInPublic(req);
   }
 
   @ApiOperation({ summary: 'Log out user' })
