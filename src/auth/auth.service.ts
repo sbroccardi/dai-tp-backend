@@ -24,6 +24,7 @@ export class AuthService {
       throw new BadRequestException('Password is incorrect');
     const tokens = await this.jwtHelperService.getTokens(user._id, user.email);
     await this.updateRefreshToken(user._id, tokens.refreshToken);
+    tokens["id"] = user._id;
     return tokens;
   }
 
