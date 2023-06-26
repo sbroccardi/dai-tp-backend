@@ -10,15 +10,15 @@ import { join } from 'path';
       // transport: 'smtps://user@example.com:topsecret@smtp.example.com',
       // or
       transport: {
-        host: 'smtp.example.com',
+        host: process.env.SMTP_SERVER,
         secure: false,
         auth: {
-          user: 'user@example.com',
-          pass: 'topsecret',
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASSWORD,
         },
       },
       defaults: {
-        from: '"No Reply" <noreply@example.com>',
+        from: `"ScreenSpace - No Reply" <${process.env.SMTP_FROM}>`,
       },
       template: {
         dir: join(__dirname, 'templates'),
