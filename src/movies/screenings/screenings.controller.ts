@@ -20,7 +20,7 @@ import { UpdateScreeningDto } from './dto/update-screening.dto';
 
 //@ApiBearerAuth()
 @ApiTags('screenings')
-@Controller('movies/{movieId}/screenings')
+@Controller('movies/:movieId/screenings')
 export class ScreeningsController {
   constructor(private readonly screeningsService: ScreeningsService) {}
 
