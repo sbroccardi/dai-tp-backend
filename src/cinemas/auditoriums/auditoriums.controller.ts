@@ -20,7 +20,7 @@ import { UpdateAuditoriumDto } from './dto/update-auditorium.dto';
 
 //@ApiBearerAuth()
 @ApiTags('auditoriums')
-@Controller('cinemas/{cinemaId}/auditoriums')
+@Controller('cinemas/:cinemaId/auditoriums')
 export class AuditoriumsController {
   constructor(private readonly auditoriumsService: AuditoriumsService) {}
 
