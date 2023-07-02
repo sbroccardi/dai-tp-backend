@@ -16,6 +16,9 @@ export class Auditorium {
 
   @Prop({ required: true })
   seatsPerRow: number;
+
+  @Prop()
+  available: boolean;
 }
 
 export const AuditoriumSchema = SchemaFactory.createForClass(Auditorium);
