@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Put,
+  Logger,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -28,6 +29,8 @@ export class MoviesController {
     private readonly moviesService: MoviesService,
     private readonly commentsService: CommentsService,
   ) {}
+
+  private readonly logger = new Logger(MoviesController.name);
 
   @Post()
   @ApiOperation({ summary: 'Create movie' })

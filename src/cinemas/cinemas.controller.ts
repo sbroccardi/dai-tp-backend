@@ -7,6 +7,9 @@ import {
   Param,
   Delete,
   Put,
+  Req,
+  UseGuards,
+  Logger,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -14,15 +17,19 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Request } from 'express';
 import { CinemasService } from './cinemas.service';
 import { CreateCinemaDto } from './dto/create-cinema.dto';
 import { UpdateCinemaDto } from './dto/update-cinema.dto';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 
 //@ApiBearerAuth()
 @ApiTags('cinemas')
 @Controller('cinemas')
 export class CinemasController {
   constructor(private readonly cinemasService: CinemasService) {}
+
+  private readonly logger = new Logger(CinemasController.name);
 
   @Post()
   @ApiOperation({ summary: 'Create cinema' })
@@ -39,8 +46,10 @@ export class CinemasController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  findAll() {
-    return this.cinemasService.findAll();
+  @UseGuards(AccessTokenGuard)
+  findAll(@Req() req: Request) {
+    const userId = req.user['sub'];
+    return this.cinemasService.findByUserId(userId);
   }
 
   @Get(':id')

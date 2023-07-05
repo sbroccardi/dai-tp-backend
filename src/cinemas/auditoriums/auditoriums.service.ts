@@ -19,6 +19,10 @@ export class AuditoriumsService {
     return createdAuditorium.save();
   }
 
+  async findByCinemaId(cinemaId: string): Promise<AuditoriumDocument[]> {
+    return this.auditoriumModel.find({ cinemaId: cinemaId }).exec();
+  }
+
   async findAll(): Promise<AuditoriumDocument[]> {
     return this.auditoriumModel.find().exec();
   }

@@ -19,6 +19,10 @@ export class ScreeningsService {
     return createdScreening.save();
   }
 
+  async findByMovieId(movieId: string): Promise<ScreeningDocument[]> {
+    return this.screeningModel.find({ movieId: movieId }).exec();
+  }
+
   async findAll(): Promise<ScreeningDocument[]> {
     return this.screeningModel.find().exec();
   }

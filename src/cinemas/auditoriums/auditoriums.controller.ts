@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Put,
+  Logger,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -18,11 +19,12 @@ import { AuditoriumsService } from './auditoriums.service';
 import { CreateAuditoriumDto } from './dto/create-auditorium.dto';
 import { UpdateAuditoriumDto } from './dto/update-auditorium.dto';
 
-//@ApiBearerAuth()
 @ApiTags('auditoriums')
 @Controller('cinemas/:cinemaId/auditoriums')
 export class AuditoriumsController {
   constructor(private readonly auditoriumsService: AuditoriumsService) {}
+
+  private readonly logger = new Logger(AuditoriumsController.name);
 
   @Post()
   @ApiOperation({ summary: 'Create auditorium' })
@@ -45,7 +47,7 @@ export class AuditoriumsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema not found.' })
   findAll(@Param('cinemaId') cinemaId: string) {
-    return this.auditoriumsService.findAll();
+    return this.auditoriumsService.findByCinemaId(cinemaId);
   }
 
   @Get(':auditoriumId')

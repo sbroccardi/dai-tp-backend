@@ -20,6 +20,10 @@ export class CinemasService {
     return this.cinemaModel.find().exec();
   }
 
+  async findByUserId(userId: string): Promise<CinemaDocument[]> {
+    return this.cinemaModel.find({ userId: userId }).exec();
+  }
+
   async findById(id: string): Promise<CinemaDocument> {
     return this.cinemaModel.findById(id);
   }

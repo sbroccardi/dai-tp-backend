@@ -44,7 +44,7 @@ export class ScreeningsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie not found.' })
   findAll(@Param('movieId') movieId: string) {
-    return this.screeningsService.findAll();
+    return this.screeningsService.findByMovieId(movieId);
   }
 
   @Get(':id')
