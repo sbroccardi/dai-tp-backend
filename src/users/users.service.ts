@@ -10,11 +10,16 @@ import {
 } from './schemas/requestToken.schema';
 import { MailService } from '../common/mail/mail.service';
 import { JwtHelperService } from 'src/common/jwt/jwt.helper.service';
+import {
+  Checkout,
+  CheckoutDocument,
+} from 'src/checkouts/schemas/checkout.schema';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Checkout.name) private checkoutModel: Model<CheckoutDocument>,
     @InjectModel(RequestToken.name)
     private requestTokenModel: Model<RequestTokenDocument>,
     private mailService: MailService,
@@ -140,8 +145,8 @@ export class UsersService {
   }
 
   // PURCHASES
-  async findPurchasesById(id: string): Promise<UserDocument> {
+  async findPurchasesByUserId(userId: string): Promise<CheckoutDocument[]> {
     //TODO:
-    return this.userModel.findById(id);
+    return this.checkoutModel.find({ userId: userId }).exec();
   }
 }

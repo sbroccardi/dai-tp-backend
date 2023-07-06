@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -17,8 +18,9 @@ import {
 import { ScreeningsService } from './screenings.service';
 import { CreateScreeningDto } from './dto/create-screening.dto';
 import { UpdateScreeningDto } from './dto/update-screening.dto';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 
-//@ApiBearerAuth()
+@ApiBearerAuth()
 @ApiTags('screenings')
 @Controller('movies/:movieId/screenings')
 export class ScreeningsController {
@@ -31,6 +33,7 @@ export class ScreeningsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie not found.' })
   @ApiResponse({ status: 409, description: 'Screening already exists.' })
+  @UseGuards(AccessTokenGuard)
   create(
     @Param('movieId') movieId: string,
     @Body() createScreeningDto: CreateScreeningDto,
@@ -43,6 +46,7 @@ export class ScreeningsController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie not found.' })
+  @UseGuards(AccessTokenGuard)
   findAll(@Param('movieId') movieId: string) {
     return this.screeningsService.findByMovieId(movieId);
   }
@@ -52,6 +56,7 @@ export class ScreeningsController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie or screening not found.' })
+  @UseGuards(AccessTokenGuard)
   findOne(@Param('movieId') movieId: string, @Param('id') id: string) {
     return this.screeningsService.findById(id);
   }
@@ -61,6 +66,7 @@ export class ScreeningsController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie or screening not found.' })
+  @UseGuards(AccessTokenGuard)
   update(
     @Param('movieId') movieId: string,
     @Param('id') id: string,
@@ -74,6 +80,7 @@ export class ScreeningsController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie or screening not found.' })
+  @UseGuards(AccessTokenGuard)
   remove(@Param('movieId') movieId: string, @Param('id') id: string) {
     return this.screeningsService.remove(id);
   }

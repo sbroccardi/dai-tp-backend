@@ -8,6 +8,7 @@ import {
   Delete,
   Put,
   Logger,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -18,7 +19,9 @@ import {
 import { AuditoriumsService } from './auditoriums.service';
 import { CreateAuditoriumDto } from './dto/create-auditorium.dto';
 import { UpdateAuditoriumDto } from './dto/update-auditorium.dto';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 
+@ApiBearerAuth()
 @ApiTags('auditoriums')
 @Controller('cinemas/:cinemaId/auditoriums')
 export class AuditoriumsController {
@@ -33,6 +36,7 @@ export class AuditoriumsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema not found.' })
   @ApiResponse({ status: 409, description: 'Auditorium already exists.' })
+  @UseGuards(AccessTokenGuard)
   create(
     @Param('cinemaId') cinemaId: string,
     @Body() createAuditoriumDto: CreateAuditoriumDto,
@@ -46,6 +50,7 @@ export class AuditoriumsController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema not found.' })
+  @UseGuards(AccessTokenGuard)
   findAll(@Param('cinemaId') cinemaId: string) {
     return this.auditoriumsService.findByCinemaId(cinemaId);
   }
@@ -55,6 +60,7 @@ export class AuditoriumsController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema or Auditorium not found.' })
+  @UseGuards(AccessTokenGuard)
   findOne(
     @Param('cinemaId') cinemaId: string,
     @Param('auditoriumId') auditoriumId: string,
@@ -67,6 +73,7 @@ export class AuditoriumsController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema or Auditorium not found.' })
+  @UseGuards(AccessTokenGuard)
   update(
     @Param('cinemaId') cinemaId: string,
     @Param('auditoriumId') auditoriumId: string,
@@ -80,6 +87,7 @@ export class AuditoriumsController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema or Auditorium not found.' })
+  @UseGuards(AccessTokenGuard)
   remove(
     @Param('cinemaId') cinemaId: string,
     @Param('auditoriumId') auditoriumId: string,

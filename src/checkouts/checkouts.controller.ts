@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -15,8 +16,9 @@ import {
 } from '@nestjs/swagger';
 import { CheckoutsService } from './checkouts.service';
 import { CreateCheckoutDto } from './dto/create-checkout.dto';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 
-//@ApiBearerAuth()
+@ApiBearerAuth()
 @ApiTags('checkouts')
 @Controller('checkouts')
 export class CheckoutsController {
@@ -28,6 +30,7 @@ export class CheckoutsController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
+  @UseGuards(AccessTokenGuard)
   create(@Body() createCheckoutDto: CreateCheckoutDto) {
     return this.checkoutsService.create(createCheckoutDto);
   }
@@ -38,6 +41,7 @@ export class CheckoutsController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Checkout not found.' })
+  @UseGuards(AccessTokenGuard)
   findOne(@Param('id') id: string) {
     return this.checkoutsService.findById(id);
   }

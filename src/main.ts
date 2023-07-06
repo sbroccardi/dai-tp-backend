@@ -18,7 +18,7 @@ async function bootstrap() {
     .addTag('screenings')
     .addTag('checkouts')
     .addTag('misc')
-    //.addBearerAuth()
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

@@ -13,7 +13,12 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -21,6 +26,7 @@ import { AccessTokenGuard } from '../common/guards/accessToken.guard';
 import { ConfirmCodeDto } from '../users/dto/confirm-code.dto';
 import { ChangePasswordDto } from '../users/dto/change-password.dto';
 
+@ApiBearerAuth()
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
@@ -60,7 +66,7 @@ export class UsersController {
     return userId;
   }
 
-  @Post('/changepassword')
+  @Post('changepassword')
   @ApiOperation({ summary: 'Change password' })
   @ApiResponse({ status: 200, description: 'Password changed.' })
   @ApiResponse({ status: 400, description: 'User not found.' })
@@ -81,17 +87,19 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get an user profile' })
-  @ApiResponse({ status: 200, description: 'User profile.' })
+  @Get('purchases')
+  @ApiOperation({ summary: 'Get user purchases' })
+  @ApiResponse({ status: 200, description: 'List of purchases.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @UseGuards(AccessTokenGuard)
-  findById(@Param('id') id: string) {
-    return this.usersService.findById(id);
+  getPurchases(@Req() req: Request) {
+    //TODO: Add validation.
+    const userId = req.user['sub'];
+    return this.usersService.findPurchasesByUserId(userId);
   }
 
-  @Get('/me')
+  @Get('me')
   @ApiOperation({ summary: 'Get user profile' })
   @ApiResponse({ status: 200, description: 'User profile.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
@@ -100,8 +108,17 @@ export class UsersController {
   findMe(@Req() req: Request) {
     //TODO: Add validation.
     const userId = req.user['sub'];
-    return userId;
-    //return this.usersService.findById(userId);
+    return this.usersService.findById(userId);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get an user profile' })
+  @ApiResponse({ status: 200, description: 'User profile.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @UseGuards(AccessTokenGuard)
+  findById(@Param('id') id: string) {
+    return this.usersService.findById(id);
   }
 
   @Put()
@@ -127,19 +144,5 @@ export class UsersController {
     //TODO: Add validation.
     const userId = req.user['sub'];
     return this.usersService.remove(userId);
-  }
-
-  @Get('/purchases')
-  @ApiOperation({ summary: 'Get user purchases' })
-  @ApiResponse({ status: 200, description: 'List of purchases.' })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'User not found.' })
-  @UseGuards(AccessTokenGuard)
-  getPurchases(@Req() req: Request) {
-    //TODO: Add validation.
-    this.logger.error(req.user);
-    const userId = req.user['sub'];
-    this.logger.log(userId);
-    return this.usersService.findPurchasesById(userId);
   }
 }

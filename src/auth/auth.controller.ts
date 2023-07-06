@@ -9,10 +9,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { PrivateDto } from './dto/private.dto';
-import { PublicDto } from './dto/public.dto';
+import { LoginPrivateDto } from './dto/login.private.dto';
+import { LoginPublicDto } from './dto/login.public.dto';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
 import { GoogleOAuthGuard } from 'src/common/guards/google-oauth.guard';
@@ -26,7 +26,7 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'User logged in.' })
   @ApiResponse({ status: 401, description: 'User not found.' })
   @Post('loginPrivate')
-  loginPrivate(@Body() data: PrivateDto) {
+  loginPrivate(@Body() data: LoginPrivateDto) {
     return this.authService.signInPrivate(data);
   }
 
@@ -34,7 +34,7 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'User logged in.' })
   @ApiResponse({ status: 401, description: 'User not found.' })
   @Post('loginPublic')
-  loginPublic(@Body() data: PublicDto) {
+  loginPublic(@Body() data: LoginPublicDto) {
     return this.authService.signInPublic(data);
   }
 
@@ -48,6 +48,7 @@ export class AuthController {
     return this.authService.signInPublic(req);
   }
 
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Log out user' })
   @ApiResponse({ status: 200, description: 'User logged out.' })
   @UseGuards(AccessTokenGuard)
@@ -57,6 +58,7 @@ export class AuthController {
     this.authService.logout(req.user['sub']);
   }
 
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Refresh token' })
   @ApiResponse({ status: 200, description: 'Token refreshed.' })
   @ApiResponse({ status: 401, description: 'User not found.' })

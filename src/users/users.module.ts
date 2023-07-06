@@ -11,12 +11,19 @@ import { MailModule } from '../common/mail/mail.module';
 import { JwtHelperModule } from 'src/common/jwt/jwt.helper.module';
 import { JwtHelperService } from 'src/common/jwt/jwt.helper.service';
 import { JwtService } from '@nestjs/jwt';
+import {
+  Checkout,
+  CheckoutSchema,
+} from 'src/checkouts/schemas/checkout.schema';
 
 @Module({
   imports: [
     MailModule,
     JwtHelperModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: Checkout.name, schema: CheckoutSchema },
+    ]),
     MongooseModule.forFeature([
       { name: RequestToken.name, schema: RequestTokenSchema },
     ]),

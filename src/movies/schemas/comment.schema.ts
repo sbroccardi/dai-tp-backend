@@ -12,7 +12,7 @@ export class Comment {
   userId: string;
 
   @Prop({ required: true })
-  comment: string;
+  comment?: string;
 
   @Prop({ required: true })
   rating: number;

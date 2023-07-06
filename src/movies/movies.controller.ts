@@ -8,6 +8,7 @@ import {
   Delete,
   Put,
   Logger,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -20,8 +21,9 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentsService } from './comments.service';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 
-//@ApiBearerAuth()
+@ApiBearerAuth()
 @ApiTags('movies')
 @Controller('movies')
 export class MoviesController {
@@ -38,6 +40,7 @@ export class MoviesController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 409, description: 'Movie already exists.' })
+  @UseGuards(AccessTokenGuard)
   create(@Body() createMovieDto: CreateMovieDto) {
     return this.moviesService.create(createMovieDto);
   }
@@ -46,6 +49,7 @@ export class MoviesController {
   @ApiOperation({ summary: 'List movies' })
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @UseGuards(AccessTokenGuard)
   findAll() {
     return this.moviesService.findAll();
   }
@@ -55,6 +59,7 @@ export class MoviesController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie not found.' })
+  @UseGuards(AccessTokenGuard)
   findOne(@Param('id') id: string) {
     return this.moviesService.findById(id);
   }
@@ -65,6 +70,7 @@ export class MoviesController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie not found.' })
+  @UseGuards(AccessTokenGuard)
   comment(@Param('id') id: string, @Body() createCommentDto: CreateCommentDto) {
     return this.commentsService.create(createCommentDto);
   }
@@ -75,6 +81,7 @@ export class MoviesController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie not found.' })
+  @UseGuards(AccessTokenGuard)
   update(@Param('id') id: string, @Body() updateMovieDto: UpdateMovieDto) {
     return this.moviesService.update(id, updateMovieDto);
   }
@@ -85,6 +92,7 @@ export class MoviesController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Movie not found.' })
+  @UseGuards(AccessTokenGuard)
   remove(@Param('id') id: string) {
     return this.moviesService.remove(id);
   }

@@ -5,8 +5,8 @@ import {
 } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { UsersService } from '../users/users.service';
-import { PrivateDto } from './dto/private.dto';
-import { PublicDto } from './dto/public.dto';
+import { LoginPrivateDto } from './dto/login.private.dto';
+import { LoginPublicDto } from './dto/login.public.dto';
 import { JwtHelperService } from '../common/jwt/jwt.helper.service';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtHelperService: JwtHelperService,
   ) {}
-  async signInPrivate(data: PrivateDto) {
+  async signInPrivate(data: LoginPrivateDto) {
     // Check if user exists
     const user = await this.usersService.findByEmail(data.email);
     if (!user) throw new BadRequestException('User does not exist');

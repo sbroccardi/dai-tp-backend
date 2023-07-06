@@ -23,7 +23,7 @@ import { CreateCinemaDto } from './dto/create-cinema.dto';
 import { UpdateCinemaDto } from './dto/update-cinema.dto';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 
-//@ApiBearerAuth()
+@ApiBearerAuth()
 @ApiTags('cinemas')
 @Controller('cinemas')
 export class CinemasController {
@@ -37,6 +37,7 @@ export class CinemasController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 409, description: 'Cinema already exists.' })
+  @UseGuards(AccessTokenGuard)
   create(@Body() createCinemaDto: CreateCinemaDto) {
     return this.cinemasService.create(createCinemaDto);
   }
@@ -57,6 +58,7 @@ export class CinemasController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Resource not found.' })
+  @UseGuards(AccessTokenGuard)
   findOne(@Param('id') id: string) {
     return this.cinemasService.findById(id);
   }
@@ -66,6 +68,7 @@ export class CinemasController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema not found.' })
+  @UseGuards(AccessTokenGuard)
   update(@Param('id') id: string, @Body() updateCinemaDto: UpdateCinemaDto) {
     return this.cinemasService.update(id, updateCinemaDto);
   }
@@ -75,6 +78,7 @@ export class CinemasController {
   @ApiResponse({ status: 200, description: 'Successful operation.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Cinema not found.' })
+  @UseGuards(AccessTokenGuard)
   remove(@Param('id') id: string) {
     return this.cinemasService.remove(id);
   }
