@@ -15,11 +15,7 @@ import { Reservation, ReservationSchema } from '../schemas/reservation.schema';
   imports: [
     MongooseModule.forFeature([
       { name: Screening.name, schema: ScreeningSchema },
-    ]),
-    MongooseModule.forFeature([
       { name: Auditorium.name, schema: AuditoriumSchema },
-    ]),
-    MongooseModule.forFeature([
       { name: Reservation.name, schema: ReservationSchema },
     ]),
   ],

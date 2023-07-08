@@ -7,7 +7,6 @@ import { UsersModule } from '../users/users.module';
 import { JwtHelperModule } from '../common/jwt/jwt.helper.module';
 import { JwtHelperService } from '../common/jwt/jwt.helper.service';
 import { JwtService } from '@nestjs/jwt';
-import { GoogleStrategy } from './strategies/google.strategy';
 
 @Module({
   imports: [UsersModule, JwtHelperModule],
@@ -18,7 +17,6 @@ import { GoogleStrategy } from './strategies/google.strategy';
     JwtService,
     AccessTokenStrategy,
     RefreshTokenStrategy,
-    GoogleStrategy,
   ],
 })
 export class AuthModule {}

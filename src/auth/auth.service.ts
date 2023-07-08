@@ -24,29 +24,40 @@ export class AuthService {
       throw new BadRequestException('Password is incorrect');
     const tokens = await this.jwtHelperService.getTokens(user._id, user.email);
     await this.updateRefreshToken(user._id, tokens.refreshToken);
-    tokens["id"] = user._id;
-    return tokens;
+    return {
+      id: user._id,
+      type: user.type,
+      fullName: user.fullname,
+      avatar: user.avatar,
+      tokens,
+    };
   }
 
-  async signInPublic(req) {
+  async signInPublic(req: LoginPublicDto) {
     // Check if user exists
     let user = await this.usersService.findByEmail(req.user.email);
     if (!user) {
       // first signin, create public user
       user = await this.usersService.create({
         type: 'public',
-        fullname: req.user.firstName + ' ' + req.user.lastName,
+        fullname: req.user.name,
         company: '',
         address: '',
         password: 'none',
         refreshToken: '',
-        avatar: req.user.picture,
+        avatar: req.user.photo,
         email: req.user.email,
       });
     }
     const tokens = await this.jwtHelperService.getTokens(user._id, user.email);
     await this.updateRefreshToken(user._id, tokens.refreshToken);
-    return { fullname: user.fullname, avatar: user.avatar, tokens };
+    return {
+      id: user._id,
+      type: user.type,
+      fullName: user.fullname,
+      avatar: user.avatar,
+      tokens,
+    };
   }
 
   async logout(userId: string) {

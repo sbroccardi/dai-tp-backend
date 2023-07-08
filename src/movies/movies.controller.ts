@@ -22,6 +22,7 @@ import { UpdateMovieDto } from './dto/update-movie.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentsService } from './comments.service';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
+import { ScreeningsService } from './screenings/screenings.service';
 
 @ApiBearerAuth()
 @ApiTags('movies')
@@ -30,6 +31,7 @@ export class MoviesController {
   constructor(
     private readonly moviesService: MoviesService,
     private readonly commentsService: CommentsService,
+    private readonly screeningsService: ScreeningsService,
   ) {}
 
   private readonly logger = new Logger(MoviesController.name);
@@ -54,6 +56,16 @@ export class MoviesController {
     return this.moviesService.findAll();
   }
 
+  @Get('/screenings/:id')
+  @ApiOperation({ summary: 'Get screening details' })
+  @ApiResponse({ status: 200, description: 'Successful operation.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'Screening not found.' })
+  @UseGuards(AccessTokenGuard)
+  findOneScreening(@Param('id') id: string) {
+    return this.screeningsService.findById(id);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get movie details' })
   @ApiResponse({ status: 200, description: 'Successful operation.' })
@@ -64,7 +76,7 @@ export class MoviesController {
     return this.moviesService.findById(id);
   }
 
-  @Post('{id}/comments')
+  @Post(':id/comments')
   @ApiOperation({ summary: 'Rate & comment movie' })
   @ApiResponse({ status: 201, description: 'Comment created.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })

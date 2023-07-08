@@ -9,13 +9,17 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginPrivateDto } from './dto/login.private.dto';
 import { LoginPublicDto } from './dto/login.public.dto';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
-import { GoogleOAuthGuard } from 'src/common/guards/google-oauth.guard';
 
 @ApiTags('auths')
 @Controller('auths')
@@ -36,16 +40,6 @@ export class AuthController {
   @Post('loginPublic')
   loginPublic(@Body() data: LoginPublicDto) {
     return this.authService.signInPublic(data);
-  }
-
-  @Get()
-  @UseGuards(GoogleOAuthGuard)
-  async googleAuth(@Req() req: Request) {}
-
-  @Get('google-redirect')
-  @UseGuards(GoogleOAuthGuard)
-  googleAuthRedirect(@Req() req: Request) {
-    return this.authService.signInPublic(req);
   }
 
   @ApiBearerAuth()
