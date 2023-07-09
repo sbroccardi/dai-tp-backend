@@ -13,6 +13,9 @@ export class Checkout {
 
   @Prop({ required: true })
   seats: string;
+
+  @Prop({ required: false })
+  totalPrice: number;
 }
 
 export const CheckoutSchema = SchemaFactory.createForClass(Checkout);

@@ -15,10 +15,6 @@ import {
   Checkout,
   CheckoutSchema,
 } from 'src/checkouts/schemas/checkout.schema';
-import {
-  Reservation,
-  ReservationSchema,
-} from 'src/movies/schemas/reservation.schema';
 
 @Module({
   imports: [
@@ -27,9 +23,6 @@ import {
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([
       { name: Checkout.name, schema: CheckoutSchema },
-    ]),
-    MongooseModule.forFeature([
-      { name: Reservation.name, schema: ReservationSchema },
     ]),
     MongooseModule.forFeature([
       { name: RequestToken.name, schema: RequestTokenSchema },

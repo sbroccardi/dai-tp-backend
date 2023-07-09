@@ -14,18 +14,12 @@ import {
   Checkout,
   CheckoutDocument,
 } from 'src/checkouts/schemas/checkout.schema';
-import {
-  Reservation,
-  ReservationDocument,
-} from 'src/movies/schemas/reservation.schema';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Checkout.name) private checkoutModel: Model<CheckoutDocument>,
-    @InjectModel(Reservation.name)
-    private reservationModel: Model<ReservationDocument>,
     @InjectModel(RequestToken.name)
     private requestTokenModel: Model<RequestTokenDocument>,
     private mailService: MailService,

@@ -22,12 +22,16 @@ import { CinemasService } from './cinemas.service';
 import { CreateCinemaDto } from './dto/create-cinema.dto';
 import { UpdateCinemaDto } from './dto/update-cinema.dto';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
+import { AuditoriumsService } from './auditoriums/auditoriums.service';
 
 @ApiBearerAuth()
 @ApiTags('cinemas')
 @Controller('cinemas')
 export class CinemasController {
-  constructor(private readonly cinemasService: CinemasService) {}
+  constructor(
+    private readonly cinemasService: CinemasService,
+    private readonly auditoriumsService: AuditoriumsService,
+  ) {}
 
   private readonly logger = new Logger(CinemasController.name);
 
@@ -51,6 +55,16 @@ export class CinemasController {
   findAll(@Req() req: Request) {
     const userId = req.user['sub'];
     return this.cinemasService.findByUserId(userId);
+  }
+
+  @Get('/auditoriums/:auditoriumId')
+  @ApiOperation({ summary: 'Get auditorium details' })
+  @ApiResponse({ status: 200, description: 'Successful operation.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'Auditorium not found.' })
+  @UseGuards(AccessTokenGuard)
+  findOneAuditorium(@Param('auditoriumId') auditoriumId: string) {
+    return this.auditoriumsService.findById(auditoriumId);
   }
 
   @Get(':id')

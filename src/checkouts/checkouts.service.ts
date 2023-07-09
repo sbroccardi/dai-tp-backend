@@ -4,32 +4,36 @@ import { Model } from 'mongoose';
 import { CreateCheckoutDto } from './dto/create-checkout.dto';
 import { Checkout, CheckoutDocument } from './schemas/checkout.schema';
 import {
-  Reservation,
-  ReservationDocument,
-} from 'src/movies/schemas/reservation.schema';
+  Screening,
+  ScreeningDocument,
+} from 'src/movies/schemas/screening.schema';
 
 @Injectable()
 export class CheckoutsService {
   constructor(
     @InjectModel(Checkout.name) private checkoutModel: Model<CheckoutDocument>,
-    @InjectModel(Reservation.name)
-    private reservationModel: Model<ReservationDocument>,
+    @InjectModel(Screening.name)
+    private screeningModel: Model<ScreeningDocument>,
   ) {}
 
   async create(
     createCheckoutDto: CreateCheckoutDto,
   ): Promise<CheckoutDocument> {
     const createdCheckout = new this.checkoutModel(createCheckoutDto);
+    if (createCheckoutDto.seats.endsWith(',')) {
+      createCheckoutDto.seats = createCheckoutDto.seats.slice(0, -1);
+    }
     const checkout = await createdCheckout.save();
 
-    const reservation = await this.reservationModel
-      .findOne({ screeningId: createCheckoutDto.screeningId })
+    const screening = await this.screeningModel
+      .findById(createCheckoutDto.screeningId)
       .exec();
 
-    if (!reservation) return null;
+    if (!screening) return null;
 
-    const requestedSeats = createCheckoutDto.seats.split(',');
-    const availableSeats = reservation.seats.filter((seat) => !seat.isReserved);
+    const requestedSeats = checkout.seats.split(',');
+
+    const availableSeats = screening.seats.filter((seat) => !seat.isReserved);
 
     const isCompletelyAvailable = requestedSeats.every((seatIndex) => {
       return availableSeats.some(
@@ -38,18 +42,20 @@ export class CheckoutsService {
     });
 
     if (!isCompletelyAvailable) {
-      this.checkoutModel.findByIdAndRemove(checkout._id);
+      await this.checkoutModel.findByIdAndRemove(checkout._id);
       return null;
     }
 
-    for (const seat of reservation.seats) {
+    for (const seat of screening.seats) {
       if (requestedSeats.includes(seat.index)) {
         seat.isReserved = true;
         seat.checkoutId = checkout._id;
       }
     }
 
-    await reservation.save();
+    screening.markModified('seats');
+
+    await screening.save();
 
     return checkout;
   }

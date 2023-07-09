@@ -20,6 +20,10 @@ export class CommentsService {
     return this.commentModel.find().exec();
   }
 
+  async findAllByMovieId(movieId: string): Promise<CommentDocument[]> {
+    return this.commentModel.find({ movieId: movieId }).exec();
+  }
+
   async findById(id: string): Promise<CommentDocument> {
     return this.commentModel.findById(id);
   }
