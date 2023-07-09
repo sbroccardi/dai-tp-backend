@@ -19,6 +19,9 @@ export class Movie {
 
   @Prop({ required: true })
   rating: string;
+
+  @Prop({ required: true })
+  image: string;
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);
