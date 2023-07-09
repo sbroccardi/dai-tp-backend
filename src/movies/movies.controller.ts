@@ -87,6 +87,17 @@ export class MoviesController {
     return this.commentsService.create(createCommentDto);
   }
 
+  @Get(':id/comments')
+  @ApiOperation({ summary: 'comments movie' })
+  @ApiResponse({ status: 200, description: 'Comments.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'Movie not found.' })
+  @UseGuards(AccessTokenGuard)
+  getComments(@Param('id') id: string) {
+    return this.commentsService.findAllByMovieId(id);
+  }
+
   @Put(':id')
   @ApiOperation({ summary: 'Update movie' })
   @ApiResponse({ status: 200, description: 'Successful operation.' })
