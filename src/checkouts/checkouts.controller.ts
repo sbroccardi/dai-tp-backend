@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -26,13 +27,15 @@ export class CheckoutsController {
 
   @Post()
   @ApiOperation({ summary: 'Checkout' })
-  @ApiResponse({ status: 200, description: 'Successful operation.' })
+  @ApiResponse({ status: 201, description: 'Successful operation.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @UseGuards(AccessTokenGuard)
-  create(@Body() createCheckoutDto: CreateCheckoutDto) {
-    return this.checkoutsService.create(createCheckoutDto);
+  async create(@Body() createCheckoutDto: CreateCheckoutDto) {
+    const checkout = await this.checkoutsService.create(createCheckoutDto);
+    if (checkout === null) throw new BadRequestException();
+    return checkout;
   }
 
   @Get(':id')

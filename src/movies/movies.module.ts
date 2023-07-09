@@ -8,8 +8,10 @@ import { Comment, CommentSchema } from './schemas/comment.schema';
 import { CommentsService } from './comments.service';
 import { ScreeningsService } from './screenings/screenings.service';
 import { Screening, ScreeningSchema } from './schemas/screening.schema';
-import { Auditorium, AuditoriumSchema } from 'src/cinemas/schemas/auditorium.schema';
-import { Reservation, ReservationSchema } from './schemas/reservation.schema';
+import {
+  Auditorium,
+  AuditoriumSchema,
+} from 'src/cinemas/schemas/auditorium.schema';
 
 @Module({
   controllers: [MoviesController],
@@ -20,7 +22,6 @@ import { Reservation, ReservationSchema } from './schemas/reservation.schema';
       { name: Comment.name, schema: CommentSchema },
       { name: Screening.name, schema: ScreeningSchema },
       { name: Auditorium.name, schema: AuditoriumSchema },
-      { name: Reservation.name, schema: ReservationSchema },
     ]),
     ScreeningsModule,
   ],

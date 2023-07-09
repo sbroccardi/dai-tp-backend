@@ -4,9 +4,9 @@ import { CheckoutsService } from './checkouts.service';
 import { CheckoutsController } from './checkouts.controller';
 import { Checkout, CheckoutSchema } from './schemas/checkout.schema';
 import {
-  Reservation,
-  ReservationSchema,
-} from 'src/movies/schemas/reservation.schema';
+  Screening,
+  ScreeningSchema,
+} from 'src/movies/schemas/screening.schema';
 
 @Module({
   controllers: [CheckoutsController],
@@ -16,7 +16,7 @@ import {
       { name: Checkout.name, schema: CheckoutSchema },
     ]),
     MongooseModule.forFeature([
-      { name: Reservation.name, schema: ReservationSchema },
+      { name: Screening.name, schema: ScreeningSchema },
     ]),
   ],
 })

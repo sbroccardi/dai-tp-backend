@@ -7,7 +7,6 @@ import {
   Auditorium,
   AuditoriumSchema,
 } from 'src/cinemas/schemas/auditorium.schema';
-import { Reservation, ReservationSchema } from '../schemas/reservation.schema';
 
 @Module({
   controllers: [ScreeningsController],
@@ -16,7 +15,6 @@ import { Reservation, ReservationSchema } from '../schemas/reservation.schema';
     MongooseModule.forFeature([
       { name: Screening.name, schema: ScreeningSchema },
       { name: Auditorium.name, schema: AuditoriumSchema },
-      { name: Reservation.name, schema: ReservationSchema },
     ]),
   ],
 })
