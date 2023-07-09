@@ -20,6 +20,12 @@ export class User {
   @Prop()
   address: string;
 
+  @Prop()
+  lat: number;
+
+  @Prop()
+  lng: number;
+
   @Prop({ required: true, unique: true })
   email: string;
 

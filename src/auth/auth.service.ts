@@ -28,6 +28,8 @@ export class AuthService {
       id: user._id,
       type: user.type,
       fullName: user.fullname,
+      lat: user.lat,
+      lng: user.lng,
       avatar: user.avatar,
       tokens,
     };
@@ -55,6 +57,8 @@ export class AuthService {
       id: user._id,
       type: user.type,
       fullName: user.fullname,
+      lat: user.lat,
+      lng: user.lng,
       avatar: user.avatar,
       tokens,
     };

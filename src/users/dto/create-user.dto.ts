@@ -3,6 +3,8 @@ export class CreateUserDto {
   avatar?: string;
   fullname: string;
   company?: string;
+  lat?: number;
+  lng?: number;
   address?: string;
   email: string;
   password: string;
