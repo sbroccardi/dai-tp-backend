@@ -4,15 +4,18 @@ import { Model } from 'mongoose';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Movie, MovieDocument } from './schemas/movie.schema';
+import { Comment, CommentDocument } from './schemas/comment.schema';
 
 @Injectable()
 export class MoviesService {
   constructor(
     @InjectModel(Movie.name) private movieModel: Model<MovieDocument>,
+    @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
   ) {}
 
   async create(createMovieDto: CreateMovieDto): Promise<MovieDocument> {
     const createdMovie = new this.movieModel(createMovieDto);
+    createdMovie.rating = 3;
     return createdMovie.save();
   }
 

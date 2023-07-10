@@ -11,11 +11,11 @@ export class Comment {
   @Prop({ required: true })
   userId: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   comment?: string;
 
-  @Prop({ required: true })
-  rating: number;
+  @Prop({ required: false })
+  rate?: number;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

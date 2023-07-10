@@ -3,4 +3,5 @@ export class CreateMovieDto {
   name: string;
   genre: string;
   age: string;
+  image: string;
 }

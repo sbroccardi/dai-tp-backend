@@ -18,7 +18,7 @@ export class Movie {
   age: string;
 
   @Prop({ required: true })
-  rating: string;
+  rating: number;
 
   @Prop({ required: true })
   image: string;

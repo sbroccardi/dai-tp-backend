@@ -1,6 +1,7 @@
 export class CreateCommentDto {
   movieId: string;
   purchaseId: string;
-  rate: string;
+  userId: string;
+  rate?: number = 0;
   comment?: string;
 }
