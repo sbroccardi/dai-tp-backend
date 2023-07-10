@@ -14,16 +14,26 @@ export class CommentsService {
   ) {}
 
   async create(createCommentDto: CreateCommentDto): Promise<CommentDocument> {
+    // Validamos que rate sea un número entre 1 y 5
+    if (
+      typeof createCommentDto.rate !== 'number' ||
+      createCommentDto.rate < 1 ||
+      createCommentDto.rate > 5
+    ) {
+      throw new Error('La calificación debe ser un número entre 1 y 5');
+    }
+
     const createdComment = new this.commentModel(createCommentDto);
     const qtyComments = await this.commentModel
       .count({ movieId: createdComment.movieId })
       .exec();
     const movie = await this.movieModel.findById(createCommentDto.movieId);
-    let nuevoPromedio =
+    let newAvg =
       (movie.rating * qtyComments + createCommentDto.rate) / (qtyComments + 1);
-    nuevoPromedio = Math.min(Math.max(Math.round(nuevoPromedio), 1), 5);
-    movie.rating = nuevoPromedio;
+    newAvg = Math.min(Math.max(Math.round(newAvg), 1), 5);
+    movie.rating = newAvg;
     await movie.save();
+
     return await createdComment.save();
   }
 
