@@ -12,6 +12,9 @@ export class Screening {
   auditoriumId: string;
 
   @Prop({ required: true })
+  cinemaId: string;
+
+  @Prop({ required: true })
   datetime: string;
 
   @Prop({ required: true })
